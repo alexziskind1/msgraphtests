@@ -1,0 +1,11 @@
+{
+  "name": "msgraph",
+  "main": "index.js",
+  "version": "1.0.0",
+  "description": "This package installs msgraph",
+  "nativescript": {
+    "platforms": {
+      "ios": "2.0.0"
+    }
+  }
+}

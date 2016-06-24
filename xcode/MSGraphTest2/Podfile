@@ -1,0 +1,4 @@
+source 'https://github.com/CocoaPods/Specs.git'
+xcodeproj 'MSGraphTest2'
+pod 'MSGraphSDK', '~> 0.10'
+pod 'MSGraphSDK-NXOAuth2Adapter'

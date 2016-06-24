@@ -1,0 +1,11 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
+  <StackLayout>
+    <Label text="Tap the button" class="title"/>
+    <Button text="me" tap="{{ onMeTap }}" />
+    <Button text="me(http)" tap="{{ onMeHttpTap }}" />
+    <Button text="drive" tap="{{ onDriveTap }}" />
+    <Button text="drive-root" tap="{{ onDriveRootTap }}" />
+    <Button text="drive-root-children" tap="{{ onDriveRootChildrenTap }}" />
+
+  </StackLayout>
+</Page>

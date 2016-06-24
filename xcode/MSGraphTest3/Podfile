@@ -1,0 +1,9 @@
+
+def myPods
+    pod 'ADALiOS', '~> 1.2'
+    pod 'MSGraphSDK', '~> 0.10'
+end
+
+target 'MSGraphTest3' do
+    myPods
+end

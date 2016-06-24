@@ -1,0 +1,3 @@
+source 'https://github.com/CocoaPods/Specs.git'
+xcodeproj 'MSGraphTest1'
+pod 'MSGraph-SDK-iOS'
