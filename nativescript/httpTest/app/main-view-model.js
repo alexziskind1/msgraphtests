@@ -1,6 +1,6 @@
 "use strict";
 var Observable = require("data/observable").Observable;
-var fetchModule = require("fetch");
+var http = require("http");
 exports.AZURE_URL = 'https://rpsdataservice.azurewebsites.net/';
 exports.AZURE_TABLE_PATH = 'api/';
 exports.AZURE_TABLE_NAME = 'session';
@@ -37,11 +37,13 @@ function loadSessionsViaHttp() {
         method: 'GET',
         headers: exports.AZURE_VERSION_HEADER
     };
+    /*
     return fetchModule.fetch(url, {
         method: "GET",
-        headers: exports.AZURE_VERSION_HEADER
+        headers: AZURE_VERSION_HEADER
     });
-    //return http.getJSON<T>(reqParams);
+    */
+    return http.getJSON(reqParams);
 }
 exports.createViewModel = createViewModel;
 //# sourceMappingURL=main-view-model.js.map

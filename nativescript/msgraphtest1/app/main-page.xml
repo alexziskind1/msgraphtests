@@ -6,6 +6,6 @@
     <Button text="drive" tap="{{ onDriveTap }}" />
     <Button text="drive-root" tap="{{ onDriveRootTap }}" />
     <Button text="drive-root-children" tap="{{ onDriveRootChildrenTap }}" />
-
+    <Button text="messages" tap="{{ onMessagesTap }}" />
   </StackLayout>
 </Page>

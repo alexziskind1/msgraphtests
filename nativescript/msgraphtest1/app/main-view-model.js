@@ -124,6 +124,24 @@ var MainViewModel = (function (_super) {
             //self.myTableView.reloadData();
         });
     };
+    MainViewModel.prototype.loadMessages = function () {
+        //let req = this.client.me().drive().root().children('').request();
+        var req = this.client.me().messages('').request();
+        req.getWithCompletion(function (list, req, er, o1, o2, o3, o4) {
+            var a = 0;
+            console.log(list);
+            /*
+                this.driveItems = [];
+                if (list != null && list.value != null) {
+                    for (var i = 0; i < list.value.count; i++) {
+                        let item = list.value[i];
+                        this.driveItems.push(item);
+                    }
+                }
+                */
+            //self.myTableView.reloadData();
+        });
+    };
     MainViewModel.prototype.getUserInfo = function () {
         var req = this.client.me().request();
         req.getWithCompletion(function (user, er) {
@@ -149,6 +167,10 @@ var MainViewModel = (function (_super) {
     MainViewModel.prototype.onDriveRootChildrenTap = function () {
         console.log('drive root children tap');
         this.loadDriveRootChildren();
+    };
+    MainViewModel.prototype.onMessagesTap = function () {
+        console.log('messages tap');
+        this.loadMessages();
     };
     return MainViewModel;
 }(observable_1.Observable));

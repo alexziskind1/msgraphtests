@@ -145,6 +145,24 @@ export class MainViewModel extends Observable {
         });
     }
 
+    public loadMessages() {
+        //let req = this.client.me().drive().root().children('').request();
+        let req = this.client.me().messages('').request();
+        req.getWithCompletion((list, req, er, o1, o2, o3, o4) => {
+            var a = 0;
+            console.log(list);
+            /*
+                this.driveItems = [];
+                if (list != null && list.value != null) {
+                    for (var i = 0; i < list.value.count; i++) {
+                        let item = list.value[i];
+                        this.driveItems.push(item);
+                    }
+                }
+                */
+                //self.myTableView.reloadData();
+        });
+    }
 
 
     public getUserInfo() {
@@ -177,5 +195,10 @@ export class MainViewModel extends Observable {
     public onDriveRootChildrenTap() {
         console.log('drive root children tap');
         this.loadDriveRootChildren();
+    }
+    
+    public onMessagesTap() {
+        console.log('messages tap');
+        this.loadMessages();
     }
 }

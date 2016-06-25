@@ -45,13 +45,14 @@ function loadSessionsViaHttp<T>() : Promise<T>  {
         headers: AZURE_VERSION_HEADER
     };
 
+    /*
     return fetchModule.fetch(url, {
         method: "GET",
         headers: AZURE_VERSION_HEADER
     });
+    */
 
-
-    //return http.getJSON<T>(reqParams);
+    return http.getJSON<T>(reqParams);
 }
 
 exports.createViewModel = createViewModel;
