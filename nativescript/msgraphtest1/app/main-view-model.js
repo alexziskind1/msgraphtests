@@ -44,6 +44,7 @@ var MainViewModel = (function (_super) {
         var req = this.client.me().request();
         req.getWithCompletion(function (list, req, er, o1, o2, o3, o4) {
             var a = 0;
+            console.log(list);
             /*
                 this.driveItems = [];
                 if (list != null && list.value != null) {
@@ -109,9 +110,11 @@ var MainViewModel = (function (_super) {
     MainViewModel.prototype.loadDriveRootChildren = function () {
         //let req = this.client.me().drive().root().children('').request();
         var expandStr = "children";
-        var req = this.client.me().drive().root().request().expand(expandStr);
+        //let req = this.client.me().drive().root().request().expand(expandStr);
+        var req = this.client.me().drive().items('root').children('').request();
         req.getWithCompletion(function (list, req, er, o1, o2, o3, o4) {
             var a = 0;
+            console.log(list);
             /*
                 this.driveItems = [];
                 if (list != null && list.value != null) {

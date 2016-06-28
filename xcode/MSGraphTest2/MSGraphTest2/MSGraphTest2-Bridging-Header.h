@@ -4,3 +4,5 @@
 
 #import <MSGraphSDK/MSGraphSDK.h>
 #import <MSGraphSDK-NXOAuth2Adapter/MSGraphSDKNXOAuth2.h>
+#import "NXOAuth2Constants.h"
+#import "NXOAuth2Client.h"

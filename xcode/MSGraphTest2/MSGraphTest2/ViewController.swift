@@ -9,6 +9,7 @@
 import UIKit
 
 
+
 class ViewController: UIViewController, UITableViewDataSource {
     
     let AUTHORITY : String = "https://login.microsoftonline.com/common"
@@ -34,6 +35,10 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         myTableView.dataSource = self;
         
+        //NXOAuth2Client.
+        //NXOAuth2Connection
+        
+        //NXOAuth2Constants
         
         
         NXOAuth2AuthenticationProvider.setClientId(self.CLIENT_ID,
@@ -52,7 +57,7 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         //var er: NSError? = nil;
         
-        if (NXOAuth2AuthenticationProvider.sharedAuthProvider().loginSilent() == false) {
+        //if (NXOAuth2AuthenticationProvider.sharedAuthProvider().loginSilent() == false) {
         NXOAuth2AuthenticationProvider.sharedAuthProvider().loginWithViewController(nil) {
             (er) -> Void in
             if (er == nil) {
@@ -68,7 +73,7 @@ class ViewController: UIViewController, UITableViewDataSource {
  
             }
         }
-        }
+        //}
     
         
         /*
@@ -123,13 +128,15 @@ class ViewController: UIViewController, UITableViewDataSource {
     }
     
     func loadDriveItems() {
-        let driveChildrenReq = self.client.me().drive().root().children().request();
+        //let req = self.client.me().drive().root().children().request();
+        let req = self.client.me().drive().items("root").children().request();
+        
         
         //driveChildrenReq = self.client.me().drive().root().request().expand("children");
         
 
-        driveChildrenReq.getWithCompletion({
-            (list:MSCollection!, req:MSGraphDriveItemChildrenCollectionRequest!, er:NSError!) -> Void in
+        req.getWithCompletion({
+            (list:MSCollection!, next:MSGraphDriveItemChildrenCollectionRequest!, er:NSError!) -> Void in
             
             dispatch_async(dispatch_get_main_queue(),{
                 

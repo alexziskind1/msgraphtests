@@ -59,6 +59,7 @@ export class MainViewModel extends Observable {
         let req = this.client.me().request();
         req.getWithCompletion((list, req, er, o1, o2, o3, o4) => {
             var a = 0;
+            console.log(list);
             /*
                 this.driveItems = [];
                 if (list != null && list.value != null) {
@@ -129,9 +130,13 @@ export class MainViewModel extends Observable {
     public loadDriveRootChildren() {
         //let req = this.client.me().drive().root().children('').request();
         var expandStr = "children";
-        let req = this.client.me().drive().root().request().expand(expandStr);
+        //let req = this.client.me().drive().root().request().expand(expandStr);
+        
+        let req = this.client.me().drive().items('root').children('').request();
+        
         req.getWithCompletion((list, req, er, o1, o2, o3, o4) => {
             var a = 0;
+            console.log(list);
             /*
                 this.driveItems = [];
                 if (list != null && list.value != null) {
