@@ -5,7 +5,7 @@ var page;
 function onNavigatingTo(args) {
     page = args.object;
     page.bindingContext = vm;
-    vm.loadChildren();
+    vm.loadChildren(page);
 }
 exports.onNavigatingTo = onNavigatingTo;
 //# sourceMappingURL=explorer-page.js.map

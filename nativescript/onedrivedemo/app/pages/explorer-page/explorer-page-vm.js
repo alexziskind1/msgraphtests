@@ -1,31 +1,39 @@
 "use strict";
 var observable_1 = require("data/observable");
+var observable_array_1 = require('data/observable-array');
+var models_1 = require('../../shared/models');
+var sessions_service_1 = require('../../services/sessions-service');
 var msAuthModule = require('../../shared/ms-auth');
 var a = 1;
 var ExplorerPageViewModel = (function (_super) {
     __extends(ExplorerPageViewModel, _super);
+    /*
+    get items() {
+        console.log('items getter called');
+        return this._items;
+    }
+    set items(value) {
+        this._items = value;
+        console.log('items setter called');
+        this.notify({ object: this, eventName: Observable.propertyChangeEvent, propertyName: "items", value: this._items });
+    }
+    */
     function ExplorerPageViewModel() {
         _super.call(this);
         this._items = [];
         this.itemsLookup = [];
+        this.items = new observable_array_1.ObservableArray();
+        this._sessionsService = new sessions_service_1.SessionsService();
         this.driveItems = NSMutableDictionary.dictionary();
-        this.items = ['item1', 'item2', 'item3'];
+        this.items.push(new models_1.DriveItemModel('item1'));
         //this.set('items', ['item1', 'item2', 'item3']);
     }
-    Object.defineProperty(ExplorerPageViewModel.prototype, "items", {
-        get: function () {
-            console.log('items getter called');
-            return this._items;
-        },
-        set: function (value) {
-            this._items = value;
-            console.log('items setter called');
-            this.notify({ object: this, eventName: observable_1.Observable.propertyChangeEvent, propertyName: "items", value: this._items });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ExplorerPageViewModel.prototype.loadChildren = function () {
+    ExplorerPageViewModel.prototype.driveItemTap = function () {
+        alert('tap');
+    };
+    ExplorerPageViewModel.prototype.loadChildren = function (page) {
+        this._page = page;
+        this._listView = this._page.getViewById('theListView');
         var expandStr = "children";
         var itemId = (this.currentItem) ? this.currentItem.entityId : 'root';
         //var childrenRequest = msAuthModule.client.me().drive().items(itemId).children('').request();
@@ -33,20 +41,39 @@ var ExplorerPageViewModel = (function (_super) {
         //let childrenRequest = msAuthModule.client.me().drive().root().request().expand(expandStr);
         //[childrenRequest expand:@"thumbnails"];
         this.loadChildrenWithRequest(childrenRequest);
+        //this.loadSessions();
+    };
+    ExplorerPageViewModel.prototype.loadSessions = function () {
+        var _this = this;
+        console.log('load sessions called');
+        this._sessionsService.loadSessions()
+            .then(function (result) {
+            _this.pushSessions(result);
+            //this.onDataLoaded();
+        });
+    };
+    ExplorerPageViewModel.prototype.pushSessions = function (sessionsFromService) {
+        var theItems = this.get('items');
+        for (var i = 0; i < sessionsFromService.length; i++) {
+            theItems.push(new models_1.DriveItemModel(sessionsFromService[i].title));
+        }
+        this.set('items', theItems);
     };
     ExplorerPageViewModel.prototype.onLoadedChildren = function (children) {
         console.log('onLoadedChildren caled with ' + children.count + ' children.');
-        var theItems = this.items;
-        for (var i = 0; i < children.count; i++) {
+        //var theItems = this.items;
+        var theItems = this.get('items');
+        var arrLength = children.count;
+        for (var i = 0; i < arrLength; i++) {
+            //var item = children[i];
             var item = children[i];
-            theItems.push('newItem' + i);
-            if (this.itemsLookup.indexOf(item.entityId) == -1) {
-                this.itemsLookup.push(item.entityId);
-            }
-            this.driveItems[item.entityId] = item;
+            var driveItemModel = new models_1.DriveItemModel(item);
+            //driveItemModel.isFolder = item.folder;
+            theItems.push(driveItemModel);
         }
-        this.items = theItems;
-        //this.set('items', theItems);
+        //this.items = theItems;
+        this.set('items', theItems);
+        //this._listView.refresh();
         //[self loadThumbnails:children];
         //[self.collectionView reloadData];
     };

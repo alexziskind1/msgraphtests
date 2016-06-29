@@ -1,23 +1,22 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
-    <StackLayout>
+    <StackLayout class="explorer-wrapper">
         <Label text="Explorer" class="title"/>
         
-        <Repeater items="{{ items }}">
-            <Repeater.itemsLayout>
-                <WrapLayout />
-            </Repeater.itemsLayout>
-            <Repeater.itemTemplate>
-                <Label text="{{ $value }}" margin="10" />
-            </Repeater.itemTemplate>
-        </Repeater>
-        
-        
-        
-        <ListView items="{{ items }}">
-            <ListView.itemTemplate>
-                <Label text="{{ $value }}" margin="10" />
-            </ListView.itemTemplate>
-        </ListView>
-        
+        <ScrollView class="items-scrollview">
+            <Repeater class="items-repeater" items="{{ items }}">
+                <Repeater.itemsLayout>
+                    <WrapLayout class="items-layout" />
+                </Repeater.itemsLayout>
+                <Repeater.itemTemplate>
+                    <StackLayout class="drive-item-wrapper" tap="{{ driveItemTap }}">
+                        <Image id="imgFav" cssClass="icon-image" stretch="aspectFit"
+                            src="{{ isFolder ? 'res://folder_icon_blue' : 'res://file_icon_blank' }}" />
+                        <Label class="drive-item-name" text="{{ name }}" />
+                        <Label class="drive-item-info" text="{{ info }}" />
+                    </StackLayout>
+                </Repeater.itemTemplate>
+            </Repeater>
+        </ScrollView>
+
     </StackLayout>
 </Page>

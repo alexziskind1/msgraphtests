@@ -9,5 +9,5 @@ var page: Page;
 export function onNavigatingTo(args: NavigatedData) {
     page = <Page>args.object;
     page.bindingContext = vm;
-    vm.loadChildren();
+    vm.loadChildren(page);
 }

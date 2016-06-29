@@ -13,4 +13,10 @@ exports.SCOPES = ["https://graph.microsoft.com/User.Read",
     "https://graph.microsoft.com/Directory.AccessAsUser.All",
     "https://graph.microsoft.com/User.ReadWrite.All",
     "https://graph.microsoft.com/Group.ReadWrite.All"];
+exports.AZURE_URL = 'https://rpsdataservice.azurewebsites.net/';
+exports.AZURE_TABLE_PATH = 'api/';
+exports.AZURE_TABLE_NAME = 'session';
+exports.AZURE_VERSION_HEADER = { 'ZUMO-API-VERSION': '2.0.0' };
+exports.LOADING_ERROR = 'Could not load sessions. Check your Internet connection and try again.';
+exports.SIDE_DRAWER_ID = 'SideDrawer';
 //# sourceMappingURL=constants.js.map
