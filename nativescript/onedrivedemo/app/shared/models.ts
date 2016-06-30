@@ -1,15 +1,22 @@
 import { Observable } from 'data/observable';
 import { DriveItem } from './interfaces';
+import * as navigationModule from './navigation';
 
 export class DriveItemModel extends Observable implements DriveItem {
     private _id: string;
+    private _entityId: string;
     private _name: string;
-    private _isFolder: boolean;
+    private _isFolder: boolean = false;
     private _childCount: number;
     private _children: Array<DriveItem>;
-    
+    private _pageId: number;
+
     public get id() {
         return this._id;
+    }
+
+    public get entityId() {
+        return this._entityId;
     }
     
     public get name() {
@@ -40,6 +47,13 @@ export class DriveItemModel extends Observable implements DriveItem {
             return this.fileSize;
         }
     }
+
+    public get pageId() {
+        return this._pageId;
+    }
+    public set pageId(val) {
+        this._pageId = val;
+    }
     
     constructor(item: MSGraphDriveItem);
     constructor(name: string);
@@ -49,6 +63,7 @@ export class DriveItemModel extends Observable implements DriveItem {
         
         if (typeof obj === "object") {
             this._id = obj && obj.id || '';
+            this._entityId = obj && obj.entityId || '';
             this._name = obj && obj.name || '';
             if (obj && obj.folder) {
                 this._isFolder = true;
@@ -62,7 +77,9 @@ export class DriveItemModel extends Observable implements DriveItem {
 
     
     public driveItemTap() {
-        alert('driveItemTap ' + this._isFolder);
+        console.log('driveItemTap ' + this._isFolder);
+        var nextPageId = this.pageId ? (this.pageId == 1 ? 2 : 1) : 2;
+        navigationModule.goToExplorerPage(this, nextPageId);
     }
     
 }

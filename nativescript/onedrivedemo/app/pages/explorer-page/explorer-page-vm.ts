@@ -8,14 +8,24 @@ import { ConferenceDay, Speaker, RoomInfo, Session, FavouriteSession } from '../
 
 import * as msAuthModule from '../../shared/ms-auth';
 
- var a = 1;
+var a = 1;
+let LOAD_SESSIONS = false;
+
+let invokeOnRunLoop = (function() {
+    var runloop = CFRunLoopGetMain();
+
+    return function(func) {
+        CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, func);
+        CFRunLoopWakeUp(runloop);
+    }
+}());
  
 export class ExplorerPageViewModel extends Observable {
     private _page: Page;
     private _listView: ListView;
     private _items = [];
     public driveItems: NSMutableDictionary;
-    public currentItem: MSGraphDriveItem;
+    public currentItem: DriveItemModel;
     private itemsLookup = [];
     private _sessionsService: SessionsService;
     
@@ -33,8 +43,9 @@ export class ExplorerPageViewModel extends Observable {
     }
     */
     
-    constructor() {
+    constructor(driveItemModel: DriveItemModel) {
         super();
+        this.currentItem = driveItemModel;
         this._sessionsService = new SessionsService();
         this.driveItems = NSMutableDictionary.dictionary();
         this.items.push(new DriveItemModel('item1'));
@@ -46,6 +57,7 @@ export class ExplorerPageViewModel extends Observable {
     }
     
     public loadChildren(page: Page) {
+        console.log('load children called');
         this._page = page;
         this._listView = <ListView>this._page.getViewById('theListView');
         var expandStr = "children";
@@ -54,15 +66,24 @@ export class ExplorerPageViewModel extends Observable {
         var childrenRequest = msAuthModule.client.me().drive().items(itemId).request().expand('children');
         //let childrenRequest = msAuthModule.client.me().drive().root().request().expand(expandStr);
         //[childrenRequest expand:@"thumbnails"];
-        this.loadChildrenWithRequest(childrenRequest);
-        //this.loadSessions();
+
+        if (LOAD_SESSIONS) {
+            this.loadSessions();
+        } else {
+            this.loadChildrenWithRequest(childrenRequest);
+        }
     }
     
     private loadSessions() {
         console.log('load sessions called');
+        
+
         this._sessionsService.loadSessions<Array<Session>>()
             .then((result: Array<Session>) => {
-                this.pushSessions(result);
+                invokeOnRunLoop(()=>{
+                    this.pushSessions(result);
+                });
+                
                 //this.onDataLoaded();
             });
     }
@@ -74,7 +95,7 @@ export class ExplorerPageViewModel extends Observable {
         }
         this.set('items', theItems);
     }
-    
+
     private onLoadedChildren(children) {
         console.log('onLoadedChildren caled with ' + children.count + ' children.');
         //var theItems = this.items;
@@ -86,12 +107,12 @@ export class ExplorerPageViewModel extends Observable {
             var driveItemModel = new DriveItemModel(item);
             //driveItemModel.isFolder = item.folder;
             theItems.push(driveItemModel);
-            /*
+            
             if (this.itemsLookup.indexOf(item.entityId) == -1) {
                 this.itemsLookup.push(item.entityId);
             }
-            this.driveItems[item.entityId] = item;
-            */
+            //this.driveItems[item.entityId] = item;
+            
         }
         //this.items = theItems;
         this.set('items', theItems);
@@ -104,6 +125,11 @@ export class ExplorerPageViewModel extends Observable {
     
     private loadChildrenWithRequest(childrenRequest) {
         childrenRequest.getWithCompletion((response, nextRequest, error) => {
+
+                invokeOnRunLoop(()=>{
+                    
+                
+
             var a = 0;
             console.log('response received from api');
             
@@ -119,6 +145,7 @@ export class ExplorerPageViewModel extends Observable {
                 this.showErrorAlert(error);
                 this.onLoadedChildren(null);
             }
+            });
 
             /*
                 this.driveItems = [];

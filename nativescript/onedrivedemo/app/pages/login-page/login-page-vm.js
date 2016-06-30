@@ -11,7 +11,7 @@ var LoginPageViewModel = (function (_super) {
         console.log('ms login tap');
         msAuthModule.login()
             .then(function () {
-            navigationModule.goToExplorerPage();
+            navigationModule.goToExplorerPage(null);
         })
             .catch(function (er) {
             alert('Error: ' + er);

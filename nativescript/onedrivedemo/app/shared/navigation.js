@@ -1,17 +1,20 @@
 "use strict";
 var frameModule = require('ui/frame');
-function explorerPage() {
-    return 'pages/explorer-page/explorer-page';
+function explorerPage(pageId) {
+    var id = pageId ? pageId : 1;
+    return 'pages/explorer-page/explorer-page' + id;
 }
 exports.explorerPage = explorerPage;
 function loginPage() {
     return 'pages/login-page/login-page';
 }
 exports.loginPage = loginPage;
-function goToExplorerPage() {
+function goToExplorerPage(driveItemModel, pageId) {
+    var ePage = explorerPage(pageId);
+    console.log('navigating to page: ' + ePage);
     var navEntry = {
-        moduleName: explorerPage(),
-        context: null,
+        moduleName: ePage,
+        context: driveItemModel,
     };
     frameModule.topmost().navigate(navEntry);
 }

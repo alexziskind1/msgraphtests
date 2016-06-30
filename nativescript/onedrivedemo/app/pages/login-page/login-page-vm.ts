@@ -13,7 +13,7 @@ export class LoginPageViewModel extends Observable {
         
         msAuthModule.login()
             .then(()=>{
-                navigationModule.goToExplorerPage();
+                navigationModule.goToExplorerPage(null);
             })
             .catch((er)=>{
                 alert('Error: ' + er);

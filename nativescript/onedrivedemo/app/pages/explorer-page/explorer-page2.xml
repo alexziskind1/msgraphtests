@@ -1,0 +1,22 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="onLoaded" navigatingTo="onNavigatingTo">
+    <StackLayout class="explorer-wrapper">
+        <Label text="Explorer" class="title"/>
+        
+        <ScrollView class="items-scrollview">
+            <Repeater class="items-repeater" items="{{ items }}">
+                <Repeater.itemsLayout>
+                    <WrapLayout class="items-layout" />
+                </Repeater.itemsLayout>
+                <Repeater.itemTemplate>
+                    <StackLayout class="drive-item-wrapper" tap="{{ driveItemTap }}">
+                        <Image id="imgFav" cssClass="icon-image" stretch="aspectFit"
+                            src="{{ isFolder ? 'res://folder_icon_blue' : 'res://file_icon_blank' }}" />
+                        <Label class="drive-item-name" text="{{ name }}" />
+                        <Label class="drive-item-info" text="{{ info }}" />
+                    </StackLayout>
+                </Repeater.itemTemplate>
+            </Repeater>
+        </ScrollView>
+
+    </StackLayout>
+</Page>
