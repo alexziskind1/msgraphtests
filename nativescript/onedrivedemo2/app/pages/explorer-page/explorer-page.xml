@@ -1,0 +1,25 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+        xmlns:PullRefresh="nativescript-pulltorefresh"
+        loaded="onLoaded" unloaded="onUnloaded" navigatingTo="onNavigatingTo" navigatedTo="onNavigatedTo">
+    <StackLayout class="explorer-wrapper">
+        <PullRefresh:PullToRefresh refresh="refreshList">
+            <ScrollView class="items-scrollview">
+                <Repeater class="items-repeater" items="{{ children }}">
+                    <Repeater.itemsLayout>
+                        <WrapLayout class="items-layout" />
+                    </Repeater.itemsLayout>
+                    <Repeater.itemTemplate>
+                        <StackLayout class="drive-item-wrapper" tap="driveItemTap">
+                            <Image id="imgFav" cssClass="icon-image" stretch="aspectFit"
+                                src="{{ isFolder ? 'res://folder_icon_blue' : 'res://file_icon_blank' }}" />
+                            <Label class="drive-item-name" text="{{ name }}" />
+                            <Label class="drive-item-info" text="{{ info }}" />
+                        </StackLayout>
+                    </Repeater.itemTemplate>
+                </Repeater>
+            </ScrollView>
+        </PullRefresh:PullToRefresh>
+
+        <Label text="no items" class="no-items" visibility="{{ childCount === 0 ? 'visible' : 'collapsed' }}" />
+    </StackLayout>
+</Page>
