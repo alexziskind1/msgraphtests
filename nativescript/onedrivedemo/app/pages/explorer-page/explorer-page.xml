@@ -1,14 +1,16 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="onLoaded" navigatingTo="onNavigatingTo">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+        xmlns:PullRefresh="nativescript-pulltorefresh"
+        loaded="onLoaded" navigatingTo="onNavigatingTo" navigatedTo="onNavigatedTo">
     <StackLayout class="explorer-wrapper">
         <Label text="Explorer" class="title"/>
-        
+        <PullRefresh:PullToRefresh refresh="refreshList">
         <ScrollView class="items-scrollview">
             <Repeater class="items-repeater" items="{{ items }}">
                 <Repeater.itemsLayout>
                     <WrapLayout class="items-layout" />
                 </Repeater.itemsLayout>
                 <Repeater.itemTemplate>
-                    <StackLayout class="drive-item-wrapper" tap="{{ driveItemTap }}">
+                    <StackLayout class="drive-item-wrapper" tap="{{driveItemTap}}">
                         <Image id="imgFav" cssClass="icon-image" stretch="aspectFit"
                             src="{{ isFolder ? 'res://folder_icon_blue' : 'res://file_icon_blank' }}" />
                         <Label class="drive-item-name" text="{{ name }}" />
@@ -17,6 +19,6 @@
                 </Repeater.itemTemplate>
             </Repeater>
         </ScrollView>
-
+        </PullRefresh:PullToRefresh>   
     </StackLayout>
 </Page>

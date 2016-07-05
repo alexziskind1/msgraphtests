@@ -9,7 +9,6 @@ export class DriveItemModel extends Observable implements DriveItem {
     private _isFolder: boolean = false;
     private _childCount: number;
     private _children: Array<DriveItem>;
-    private _pageId: number;
 
     public get id() {
         return this._id;
@@ -47,13 +46,6 @@ export class DriveItemModel extends Observable implements DriveItem {
             return this.fileSize;
         }
     }
-
-    public get pageId() {
-        return this._pageId;
-    }
-    public set pageId(val) {
-        this._pageId = val;
-    }
     
     constructor(item: MSGraphDriveItem);
     constructor(name: string);
@@ -78,8 +70,7 @@ export class DriveItemModel extends Observable implements DriveItem {
     
     public driveItemTap() {
         console.log('driveItemTap ' + this._isFolder);
-        var nextPageId = this.pageId ? (this.pageId == 1 ? 2 : 1) : 2;
-        navigationModule.goToExplorerPage(this, nextPageId);
+        navigationModule.goToExplorerPage(this);
     }
     
 }

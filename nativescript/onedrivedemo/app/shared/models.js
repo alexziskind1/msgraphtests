@@ -81,20 +81,9 @@ var DriveItemModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(DriveItemModel.prototype, "pageId", {
-        get: function () {
-            return this._pageId;
-        },
-        set: function (val) {
-            this._pageId = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
     DriveItemModel.prototype.driveItemTap = function () {
         console.log('driveItemTap ' + this._isFolder);
-        var nextPageId = this.pageId ? (this.pageId == 1 ? 2 : 1) : 2;
-        navigationModule.goToExplorerPage(this, nextPageId);
+        navigationModule.goToExplorerPage(this);
     };
     return DriveItemModel;
 }(observable_1.Observable));

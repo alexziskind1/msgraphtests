@@ -12,6 +12,8 @@ export const SCOPES = [ "https://graph.microsoft.com/User.Read",
                 "https://graph.microsoft.com/Directory.AccessAsUser.All",
                 "https://graph.microsoft.com/User.ReadWrite.All",
                 "https://graph.microsoft.com/Group.ReadWrite.All" ];
+
+export const FILES_READWRITE_SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"];
                 
                 
 export const AZURE_URL = 'https://rpsdataservice.azurewebsites.net/';

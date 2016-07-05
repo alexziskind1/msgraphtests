@@ -13,6 +13,7 @@ exports.SCOPES = ["https://graph.microsoft.com/User.Read",
     "https://graph.microsoft.com/Directory.AccessAsUser.All",
     "https://graph.microsoft.com/User.ReadWrite.All",
     "https://graph.microsoft.com/Group.ReadWrite.All"];
+exports.FILES_READWRITE_SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"];
 exports.AZURE_URL = 'https://rpsdataservice.azurewebsites.net/';
 exports.AZURE_TABLE_PATH = 'api/';
 exports.AZURE_TABLE_NAME = 'session';

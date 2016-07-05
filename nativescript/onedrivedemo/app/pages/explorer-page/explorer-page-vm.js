@@ -4,7 +4,8 @@ var observable_array_1 = require('data/observable-array');
 var models_1 = require('../../shared/models');
 var sessions_service_1 = require('../../services/sessions-service');
 var msAuthModule = require('../../shared/ms-auth');
-var a = 1;
+var folderData = require('../../shared/folder-data');
+var a = 2;
 var LOAD_SESSIONS = false;
 var invokeOnRunLoop = (function () {
     var runloop = CFRunLoopGetMain();
@@ -30,6 +31,7 @@ var ExplorerPageViewModel = (function (_super) {
         _super.call(this);
         this._items = [];
         this.itemsLookup = [];
+        this.children = new Array();
         this.items = new observable_array_1.ObservableArray();
         this.currentItem = driveItemModel;
         this._sessionsService = new sessions_service_1.SessionsService();
@@ -40,27 +42,32 @@ var ExplorerPageViewModel = (function (_super) {
     ExplorerPageViewModel.prototype.driveItemTap = function () {
         alert('tap');
     };
-    ExplorerPageViewModel.prototype.loadChildren = function (page) {
+    ExplorerPageViewModel.prototype.loadChildren = function () {
         console.log('load children called');
-        this._page = page;
-        this._listView = this._page.getViewById('theListView');
+        //this._page = page;
+        //this._listView = <ListView>this._page.getViewById('theListView');
         var expandStr = "children";
         var itemId = (this.currentItem) ? this.currentItem.entityId : 'root';
-        //var childrenRequest = msAuthModule.client.me().drive().items(itemId).children('').request();
-        var childrenRequest = msAuthModule.client.me().drive().items(itemId).request().expand('children');
-        //let childrenRequest = msAuthModule.client.me().drive().root().request().expand(expandStr);
-        //[childrenRequest expand:@"thumbnails"];
-        if (LOAD_SESSIONS) {
-            this.loadSessions();
+        if (folderData.map[itemId]) {
+            this.updateDriveItemModelsView(folderData.map[itemId]);
         }
         else {
-            this.loadChildrenWithRequest(childrenRequest);
+            //var childrenRequest = msAuthModule.client.me().drive().items(itemId).children('').request();
+            var childrenRequest = msAuthModule.client.me().drive().items(itemId).request().expand('children');
+            //let childrenRequest = msAuthModule.client.me().drive().root().request().expand(expandStr);
+            //[childrenRequest expand:@"thumbnails"];
+            if (LOAD_SESSIONS) {
+                return this.loadSessions();
+            }
+            else {
+                return this.loadChildrenWithRequest(childrenRequest);
+            }
         }
     };
     ExplorerPageViewModel.prototype.loadSessions = function () {
         var _this = this;
         console.log('load sessions called');
-        this._sessionsService.loadSessions()
+        return this._sessionsService.loadSessions()
             .then(function (result) {
             invokeOnRunLoop(function () {
                 _this.pushSessions(result);
@@ -86,45 +93,45 @@ var ExplorerPageViewModel = (function (_super) {
             var driveItemModel = new models_1.DriveItemModel(item);
             //driveItemModel.isFolder = item.folder;
             theItems.push(driveItemModel);
-            if (this.itemsLookup.indexOf(item.entityId) == -1) {
-                this.itemsLookup.push(item.entityId);
-            }
         }
         //this.items = theItems;
-        this.set('items', theItems);
-        //this._listView.refresh();
+        //var itemId = (this.currentItem) ? this.currentItem.entityId : 'root'; 
+        if (!folderData.map[item.entityId]) {
+            folderData.map[item.entityId] = theItems;
+        }
+        //this.set('items', theItems);
+        this.updateDriveItemModelsView(theItems);
         //[self loadThumbnails:children];
         //[self.collectionView reloadData];
     };
+    ExplorerPageViewModel.prototype.updateDriveItemModelsView = function (driveItemModels) {
+        //var theItems = <Array<DriveItemModel>>this.get('items');
+        //for
+        this.set('items', driveItemModels);
+    };
     ExplorerPageViewModel.prototype.loadChildrenWithRequest = function (childrenRequest) {
         var _this = this;
-        childrenRequest.getWithCompletion(function (response, nextRequest, error) {
-            invokeOnRunLoop(function () {
-                var a = 0;
-                console.log('response received from api');
-                if (!error) {
-                    if (response) {
-                        _this.onLoadedChildren(response.children);
+        return new Promise(function (resolve, reject) {
+            childrenRequest.getWithCompletion(function (response, nextRequest, error) {
+                invokeOnRunLoop(function () {
+                    var a = 0;
+                    console.log('response received from api');
+                    if (!error) {
+                        if (response) {
+                            _this.onLoadedChildren(response.children);
+                            resolve();
+                        }
+                        if (nextRequest) {
+                            _this.loadChildrenWithRequest(nextRequest);
+                        }
                     }
-                    if (nextRequest) {
-                        _this.loadChildrenWithRequest(nextRequest);
+                    else if (error.isAuthenticationError) {
+                        _this.showErrorAlert(error);
+                        _this.onLoadedChildren(null);
+                        reject(error);
                     }
-                }
-                else if (error.isAuthenticationError) {
-                    _this.showErrorAlert(error);
-                    _this.onLoadedChildren(null);
-                }
+                });
             });
-            /*
-                this.driveItems = [];
-                if (list != null && list.value != null) {
-                    for (var i = 0; i < list.value.count; i++) {
-                        let item = list.value[i];
-                        this.driveItems.push(item);
-                    }
-                }
-                */
-            //self.myTableView.reloadData();
         });
     };
     ExplorerPageViewModel.prototype.showErrorAlert = function (error) {

@@ -7,6 +7,10 @@ export interface DriveItem {
     children: Array<DriveItem>;
 }
 
+export interface DriveSnapshot {
+    selectId: string;
+    items: Array<DriveItem>;
+}
 
 export interface ConferenceDay {
     date: Date;

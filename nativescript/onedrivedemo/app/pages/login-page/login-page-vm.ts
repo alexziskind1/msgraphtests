@@ -9,11 +9,11 @@ export class LoginPageViewModel extends Observable {
     }
     
     public onMicrosoftTap() {
-        console.log('ms login tap');
+        //console.log('ms login tap');
         
         msAuthModule.login()
             .then(()=>{
-                navigationModule.goToExplorerPage(null);
+                navigationModule.goToExplorerPage(null, true);
             })
             .catch((er)=>{
                 alert('Error: ' + er);

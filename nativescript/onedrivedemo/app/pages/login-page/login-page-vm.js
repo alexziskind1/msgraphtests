@@ -8,10 +8,10 @@ var LoginPageViewModel = (function (_super) {
         _super.call(this);
     }
     LoginPageViewModel.prototype.onMicrosoftTap = function () {
-        console.log('ms login tap');
+        //console.log('ms login tap');
         msAuthModule.login()
             .then(function () {
-            navigationModule.goToExplorerPage(null);
+            navigationModule.goToExplorerPage(null, true);
         })
             .catch(function (er) {
             alert('Error: ' + er);

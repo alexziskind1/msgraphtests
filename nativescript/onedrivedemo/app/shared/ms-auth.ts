@@ -1,11 +1,13 @@
 import * as applicationModule from 'application';
 import * as constantsModule from './constants';
+import * as utils from 'utils/utils';
 
 export var client: any;
 
 export function login<T>() : Promise<T> {
     var iosApp = applicationModule.ios;
-    NXOAuth2AuthenticationProvider.setClientIdScopes(constantsModule.CLIENT_ID, constantsModule.SCOPES);
+
+    NXOAuth2AuthenticationProvider.setClientIdScopes(constantsModule.CLIENT_ID, utils.ios.collections.jsArrayToNSArray (constantsModule.FILES_READWRITE_SCOPES));
    
     return new Promise<T>((resolve, reject)=>{
         if (NXOAuth2AuthenticationProvider.sharedAuthProvider().loginSilent()) {
