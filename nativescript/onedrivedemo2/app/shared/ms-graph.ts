@@ -13,6 +13,9 @@ export function login<T>() : Promise<T> {
         if (NXOAuth2AuthenticationProvider.sharedAuthProvider().loginSilent()) {
             MSGraphClient.setAuthenticationProvider(NXOAuth2AuthenticationProvider.sharedAuthProvider());
             client = MSGraphClient.client();
+
+            printAccessToken();
+
             resolve();
         }
         else {
@@ -23,9 +26,20 @@ export function login<T>() : Promise<T> {
                 else {
                     MSGraphClient.setAuthenticationProvider(NXOAuth2AuthenticationProvider.sharedAuthProvider());
                     client = MSGraphClient.client();
+
+                    printAccessToken();
+
                     resolve();
                 }
             });
         } 
     });
+}
+
+export function printAccessToken() {
+    var accounts = NXOAuth2AccountStore.sharedStore().accountsWithAccountType("MSGraph");
+    if (accounts.count > 0) {
+        var account: NXOAuth2Account = accounts[0];
+        console.log('accessToken is: ' + account.accessToken.accessToken);
+    }
 }

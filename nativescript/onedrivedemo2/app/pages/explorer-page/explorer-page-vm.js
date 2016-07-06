@@ -3,7 +3,7 @@ var observable_1 = require("data/observable");
 var observable_array_1 = require('data/observable-array');
 var msGraphModule = require('../../shared/ms-graph');
 var async_helper_1 = require('../../shared/async-helper');
-var a = 1;
+var a = 2;
 var ExplorerPageViewModel = (function (_super) {
     __extends(ExplorerPageViewModel, _super);
     function ExplorerPageViewModel(obj) {

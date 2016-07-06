@@ -7,7 +7,7 @@ import * as msGraphModule from '../../shared/ms-graph';
 import * as navigationModule from '../../shared/navigation';
 import { invokeOnRunLoop } from '../../shared/async-helper';
 
-var a = 1;
+var a = 2;
  
 export class ExplorerPageViewModel extends Observable implements DriveItem {
     private _id: string;

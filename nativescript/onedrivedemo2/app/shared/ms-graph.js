@@ -9,6 +9,7 @@ function login() {
         if (NXOAuth2AuthenticationProvider.sharedAuthProvider().loginSilent()) {
             MSGraphClient.setAuthenticationProvider(NXOAuth2AuthenticationProvider.sharedAuthProvider());
             exports.client = MSGraphClient.client();
+            printAccessToken();
             resolve();
         }
         else {
@@ -19,6 +20,7 @@ function login() {
                 else {
                     MSGraphClient.setAuthenticationProvider(NXOAuth2AuthenticationProvider.sharedAuthProvider());
                     exports.client = MSGraphClient.client();
+                    printAccessToken();
                     resolve();
                 }
             });
@@ -26,4 +28,12 @@ function login() {
     });
 }
 exports.login = login;
+function printAccessToken() {
+    var accounts = NXOAuth2AccountStore.sharedStore().accountsWithAccountType("MSGraph");
+    if (accounts.count > 0) {
+        var account = accounts[0];
+        console.log('accessToken is: ' + account.accessToken.accessToken);
+    }
+}
+exports.printAccessToken = printAccessToken;
 //# sourceMappingURL=ms-graph.js.map
