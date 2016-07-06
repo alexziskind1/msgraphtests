@@ -1,0 +1,102 @@
+﻿.login-title {
+    margin-top: 30;
+    color: #666666;
+    font-size: 14;
+    horizontal-align: center;
+}
+
+.btn-login-ms {
+    background-image: url('res://microsoft_logo_squares');
+    background-size: 20 20;
+    background-position: 10 10;
+    background-repeat: no-repeat;
+    padding-left: 40;
+    padding-right: 10;
+    padding-top: 10;
+    padding-bottom: 10;
+    border-width: 1;
+    border-color: red;
+    border-radius: 2;
+    horizontal-align: center;
+    margin-top:40;
+}
+
+.explorer-wrapper {
+
+}
+
+.items-scrollview {
+
+}
+
+.items-layout {
+    margin-left: 20;
+    margin-right: 20;
+}
+
+.icon-image-wrapper {
+    vertical-align: center;
+    horizontal-align: center;
+    width: 70;
+    height: 70;
+}
+
+.icon-image {
+    vertical-align: center;
+    horizontal-align: center;
+    width: 70;
+    height: 70;
+}
+
+.drive-item-folder {
+
+}
+
+.drive-item-name {
+    margin-top: 10;
+    font-size: 10;
+    horizontal-align: center;
+}
+
+.drive-item-info {
+    margin-top: 3;
+    color: #999999;
+    font-size: 8;
+    horizontal-align: center;
+}
+
+.drive-item-wrapper {
+    width: 33%;
+    height: 150;
+    vertical-align: bottom;
+}
+
+.drive-select-area {
+    vertical-align: bottom;
+    horizontal-align: center;
+    height: 20;
+    width: 20;
+    background-color: #ffffff;
+    border-radius: 10;
+    border-width: 2px;
+    border-color: blue;
+    opacity: 0.5;
+    margin-left: 25;
+    margin-top: 45;
+}
+
+.drive-select-icon {
+    vertical-align: bottom;
+    horizontal-align: center;
+    height: 20;
+    width: 20;
+    margin-left: 25;
+    margin-top: 47;
+}
+
+.no-items {
+    margin-top: 30;
+    color: #666666;
+    font-size: 10;
+    horizontal-align: center;
+}
