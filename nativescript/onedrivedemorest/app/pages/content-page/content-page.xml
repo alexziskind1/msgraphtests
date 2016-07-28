@@ -1,0 +1,6 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded">
+  <StackLayout>
+    <Label text="Content" class="login-title"/>
+    <Image id="imgContent" src="{{ imgContentSrc }}" />
+  </StackLayout>
+</Page>

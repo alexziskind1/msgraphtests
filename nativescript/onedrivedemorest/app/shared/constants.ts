@@ -18,3 +18,25 @@ export const SCOPES = [ "https://graph.microsoft.com/User.Read",
                 "https://graph.microsoft.com/Group.ReadWrite.All" ];
 
 export const FILES_READWRITE_SCOPES = ["https://graph.microsoft.com/Files.ReadWrite"];
+
+
+export const IMAGE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'];
+
+export const FILE_FORMATS = [
+    { ext: 'jpg', type: 'image', icon: '' },
+    { ext: 'jpeg', type: 'image', icon: '' },
+    { ext: 'png', type: 'image', icon: '' },
+    { ext: 'gif', type: 'image', icon: '' },
+    { ext: 'bmp', type: 'image', icon: '' },
+    { ext: 'tiff', type: 'image', icon: '' },
+    { ext: 'xls', type: 'excel', icon: '' },
+    { ext: 'xlsx', type: 'excel', icon: '' },
+    { ext: 'doc', type: 'word', icon: '' },
+    { ext: 'docx', type: 'word', icon: '' },
+    { ext: 'ppt', type: 'powerpoint', icon: '' },
+    { ext: 'pptx', type: 'powerpoint', icon: '' },
+    { ext: 'txt', type: 'text', icon: '' },
+    { ext: 'pdf', type: 'pdf', icon: '' },
+    { ext: 'zip', type: 'archive', icon: '' },
+    { ext: 'rar', type: 'archive', icon: '' }
+];

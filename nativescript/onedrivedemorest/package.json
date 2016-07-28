@@ -12,7 +12,7 @@
 	"dependencies": {
 		"msgraph": "file:../plugins/msgraph",
 		"nativescript-pulltorefresh": "^1.1.4",
-		"tns-core-modules": "2.0.1"
+		"tns-core-modules": "2.1.0"
 	},
 	"devDependencies": {
 		"nativescript-dev-typescript": "^0.3.2",

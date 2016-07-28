@@ -4,6 +4,10 @@ function explorerPage() {
     return 'pages/explorer-page/explorer-page';
 }
 exports.explorerPage = explorerPage;
+function contentPage() {
+    return 'pages/content-page/content-page';
+}
+exports.contentPage = contentPage;
 function loginPage() {
     return 'pages/login-page/login-page';
 }
@@ -31,6 +35,15 @@ function goToExplorerPage(vm, clearHistory) {
     frameModule.topmost().navigate(navEntry);
 }
 exports.goToExplorerPage = goToExplorerPage;
+function goToContentPage(vm) {
+    var ePage = contentPage();
+    var navEntry = {
+        moduleName: ePage,
+        context: vm
+    };
+    frameModule.topmost().navigate(navEntry);
+}
+exports.goToContentPage = goToContentPage;
 function goToMePage(clearHistory) {
     var ePage = mePage();
     var navEntry = {

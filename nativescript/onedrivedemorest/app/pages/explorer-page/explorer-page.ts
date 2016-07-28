@@ -36,7 +36,14 @@ export function onLoaded(args: EventData) {
 }
 
 export function onActionTap(args: EventData) {
-    dialogModule.action("Your message", "Cancel", ["Create Folder", "Select", "Logout"]).then(function (result) {
+    var options = ["Create Folder", "Select", "Logout"];
+    var inSelectMode = <boolean>vm.get('inSelectMode');
+    var selChildren = vm.selectedChildren();
+    if (selChildren.length > 0) {
+        options.push('Delete');
+    }
+
+    dialogModule.action("Make a Selection", "Cancel", options).then(function (result) {
         console.log("Dialog result: " + result)
         switch(result) {
             case 'Logout': 
@@ -46,8 +53,23 @@ export function onActionTap(args: EventData) {
                     })
                     .catch((er)=>{
                         console.log('failed to logout: ' + er);
+                        navigationModule.goToLoginPage(true);
                     });
 
+                break;
+            case 'Delete':
+                var options = {
+                    title: "Deletion",
+                    message: "Are you sure you want to delete these items?",
+                    okButtonText: "Yes",
+                    cancelButtonText: "No",
+                    neutralButtonText: "Cancel"
+                };
+                dialogModule.confirm(options).then((result: boolean) => {
+                    if (result) {
+                        vm.deleteSelectedItems();
+                    }
+                });
                 break;
             case 'Select':
                 vm.toggleSelectMode();
@@ -66,8 +88,11 @@ export function driveItemTap(args: EventData) {
     if (inSelectMode) {
         dim.toggleSelected();
     } else {
-        
-        navigationModule.goToExplorerPage(dim);
+        if (dim.isFolder) {
+            navigationModule.goToExplorerPage(dim);
+        } else {
+            navigationModule.goToContentPage(dim);
+        }
     }
 }
 

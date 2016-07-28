@@ -18,3 +18,8 @@ export function getExplorerPageViewModelById(model: ExplorerPageViewModel) {
     }
     return vmMap[entityId];
 }
+
+export function clear() {
+    lastVm = null;
+    vmMap = {};
+}

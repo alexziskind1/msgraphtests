@@ -15,4 +15,9 @@ function getExplorerPageViewModelById(model) {
     return exports.vmMap[entityId];
 }
 exports.getExplorerPageViewModelById = getExplorerPageViewModelById;
+function clear() {
+    exports.lastVm = null;
+    exports.vmMap = {};
+}
+exports.clear = clear;
 //# sourceMappingURL=folder-data.js.map

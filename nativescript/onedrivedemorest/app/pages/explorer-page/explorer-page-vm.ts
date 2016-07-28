@@ -9,7 +9,7 @@ import * as navigationModule from '../../shared/navigation';
 import * as constantsModule from '../../shared/constants';
 import { invokeOnRunLoop } from '../../shared/async-helper';
 
-var a = 1;
+var a = 2;
 
 export class ExplorerPageViewModel extends Observable implements DriveItem {
     private _id: string;
@@ -69,8 +69,11 @@ export class ExplorerPageViewModel extends Observable implements DriveItem {
                 this._isFolder = true;
                 this.set('childCount', obj.folder.childCount);
                 this._childCount = obj.folder.childCount;
-            }
+            } else if (obj && !obj.folder) {
             //this.children = obj && obj.children || new ObservableArray();
+                //Not calling loadThumbnails for now because it's been turned off on the Graph API side (7/27/16)
+                //this.loadThumbnail(obj);
+            }
         } else if (typeof obj === "string") {
             this._entityId = obj;
         }
@@ -80,6 +83,41 @@ export class ExplorerPageViewModel extends Observable implements DriveItem {
 
         this.set('isSelected', false);
         this.set('inSelectMode', false);
+
+    }
+
+    public loadThumbnail(obj) {
+        var req : httpModule.HttpRequestOptions = {
+            url: constantsModule.GRAPH_RESOURCE + 'v1.0/me/drive/items/'+obj.id+'/thumbnails/0/small/content',
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + msGraphModule.accessToken
+            }
+        };
+
+        return msGraphModule.login()
+            .then(()=>{
+                return new Promise<void>((resolve, reject)=>{
+                    if (msGraphModule.accessTokenExpired()) {
+                        var er = 'access token expired';
+                        this.showErrorAlert(er);
+                        reject(er);
+                    } else {
+                        httpModule.getJSON(req)
+                            .then((response:any)=>{
+                                var jsonStr = JSON.stringify(response, null, 2);
+                                //console.log(jsonStr);
+                                //this.onLoadedChildren(response.children);
+                                resolve();
+                            })
+                            .catch((error)=>{
+                                this.showErrorAlert(error);
+                                //this.onLoadedChildren(null);
+                                reject(error);
+                            });
+                    }
+                });
+            });
     }
 
     public toggleSelected() {
@@ -87,18 +125,76 @@ export class ExplorerPageViewModel extends Observable implements DriveItem {
         this.set('isSelected', !isSel);
     }
 
+    public selectedChildren() {
+        var selArr = [];
+        for (var i = 0; i < this.children.length; i++) {
+            var child = <Observable>this.children.getItem(i);
+            if (<boolean>child.get('isSelected')) {
+                selArr.push(child);
+            }
+        }
+        console.log('selected items length: ' + selArr.length);
+        return selArr;
+    }
+
     public toggleSelectMode() {
         var selMode = <boolean>this.get('inSelectMode');
         this.set('inSelectMode', !selMode);
-        console.log('inSelectMode set to: '  + !selMode);
+        //console.log('inSelectMode set to: '  + !selMode);
     }
 
     public getInSelectMode() : boolean {
-        console.log('getInSelectMode called');
+        //console.log('getInSelectMode called');
         if (this.par) {
             return this.par.get('inSelectMode');
         }
         return false;
+    }
+
+    public deleteSelectedItems() {
+        var selArr = this.selectedChildren();
+
+            return msGraphModule.login()
+                .then(()=>{
+                    return new Promise<void>((resolve, reject)=>{
+                        if (msGraphModule.accessTokenExpired()) {
+                            var er = 'access token expired';
+                            this.showErrorAlert(er);
+                            reject(er);
+                        } else {
+                            var promises = [];
+
+                            for (var i = 0; i < selArr.length; i++) {
+                                var req : httpModule.HttpRequestOptions = {
+                                    url: constantsModule.GRAPH_RESOURCE + 'v1.0/me/drive/items/'+selArr[i].id,
+                                    method: "DELETE",
+                                    headers: {
+                                        Authorization: "Bearer " + msGraphModule.accessToken
+                                    }
+                                };
+
+                                var httpP = httpModule.request(req)
+                                    .then((response: any)=>{
+
+                                    })
+                                    .catch((error)=>{
+                                        this.showErrorAlert(error);
+                                        reject(error);
+                                    });
+
+                                promises.push(httpP);
+                            }
+
+                            Promise.all(promises)
+                            .then(()=>{
+                                this.loadChildren().then(()=>{resolve()});
+                                this.toggleSelectMode();
+                            });
+
+                        }
+                    });
+                });
+
     }
 
     private onLoadedChildren(items) {
@@ -146,7 +242,7 @@ export class ExplorerPageViewModel extends Observable implements DriveItem {
                         httpModule.getJSON(req)
                             .then((response:any)=>{
                                 var jsonStr = JSON.stringify(response, null, 2);
-                                console.log(jsonStr);
+                                //console.log(jsonStr);
                                 this.onLoadedChildren(response.children);
                                 resolve();
                             })

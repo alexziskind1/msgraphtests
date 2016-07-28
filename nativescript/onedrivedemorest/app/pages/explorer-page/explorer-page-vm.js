@@ -4,7 +4,7 @@ var observable_array_1 = require('data/observable-array');
 var httpModule = require('http');
 var msGraphModule = require('../../shared/ms-graph');
 var constantsModule = require('../../shared/constants');
-var a = 1;
+var a = 2;
 var ExplorerPageViewModel = (function (_super) {
     __extends(ExplorerPageViewModel, _super);
     function ExplorerPageViewModel(obj, par) {
@@ -20,6 +20,8 @@ var ExplorerPageViewModel = (function (_super) {
                 this._isFolder = true;
                 this.set('childCount', obj.folder.childCount);
                 this._childCount = obj.folder.childCount;
+            }
+            else if (obj && !obj.folder) {
             }
         }
         else if (typeof obj === "string") {
@@ -85,21 +87,105 @@ var ExplorerPageViewModel = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    ExplorerPageViewModel.prototype.loadThumbnail = function (obj) {
+        var _this = this;
+        var req = {
+            url: constantsModule.GRAPH_RESOURCE + 'v1.0/me/drive/items/' + obj.id + '/thumbnails/0/small/content',
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + msGraphModule.accessToken
+            }
+        };
+        return msGraphModule.login()
+            .then(function () {
+            return new Promise(function (resolve, reject) {
+                if (msGraphModule.accessTokenExpired()) {
+                    var er = 'access token expired';
+                    _this.showErrorAlert(er);
+                    reject(er);
+                }
+                else {
+                    httpModule.getJSON(req)
+                        .then(function (response) {
+                        var jsonStr = JSON.stringify(response, null, 2);
+                        //console.log(jsonStr);
+                        //this.onLoadedChildren(response.children);
+                        resolve();
+                    })
+                        .catch(function (error) {
+                        _this.showErrorAlert(error);
+                        //this.onLoadedChildren(null);
+                        reject(error);
+                    });
+                }
+            });
+        });
+    };
     ExplorerPageViewModel.prototype.toggleSelected = function () {
         var isSel = this.get('isSelected');
         this.set('isSelected', !isSel);
     };
+    ExplorerPageViewModel.prototype.selectedChildren = function () {
+        var selArr = [];
+        for (var i = 0; i < this.children.length; i++) {
+            var child = this.children.getItem(i);
+            if (child.get('isSelected')) {
+                selArr.push(child);
+            }
+        }
+        console.log('selected items length: ' + selArr.length);
+        return selArr;
+    };
     ExplorerPageViewModel.prototype.toggleSelectMode = function () {
         var selMode = this.get('inSelectMode');
         this.set('inSelectMode', !selMode);
-        console.log('inSelectMode set to: ' + !selMode);
+        //console.log('inSelectMode set to: '  + !selMode);
     };
     ExplorerPageViewModel.prototype.getInSelectMode = function () {
-        console.log('getInSelectMode called');
+        //console.log('getInSelectMode called');
         if (this.par) {
             return this.par.get('inSelectMode');
         }
         return false;
+    };
+    ExplorerPageViewModel.prototype.deleteSelectedItems = function () {
+        var _this = this;
+        var selArr = this.selectedChildren();
+        return msGraphModule.login()
+            .then(function () {
+            return new Promise(function (resolve, reject) {
+                if (msGraphModule.accessTokenExpired()) {
+                    var er = 'access token expired';
+                    _this.showErrorAlert(er);
+                    reject(er);
+                }
+                else {
+                    var promises = [];
+                    for (var i = 0; i < selArr.length; i++) {
+                        var req = {
+                            url: constantsModule.GRAPH_RESOURCE + 'v1.0/me/drive/items/' + selArr[i].id,
+                            method: "DELETE",
+                            headers: {
+                                Authorization: "Bearer " + msGraphModule.accessToken
+                            }
+                        };
+                        var httpP = httpModule.request(req)
+                            .then(function (response) {
+                        })
+                            .catch(function (error) {
+                            _this.showErrorAlert(error);
+                            reject(error);
+                        });
+                        promises.push(httpP);
+                    }
+                    Promise.all(promises)
+                        .then(function () {
+                        _this.loadChildren().then(function () { resolve(); });
+                        _this.toggleSelectMode();
+                    });
+                }
+            });
+        });
     };
     ExplorerPageViewModel.prototype.onLoadedChildren = function (items) {
         var theItems = [];
@@ -144,7 +230,7 @@ var ExplorerPageViewModel = (function (_super) {
                     httpModule.getJSON(req)
                         .then(function (response) {
                         var jsonStr = JSON.stringify(response, null, 2);
-                        console.log(jsonStr);
+                        //console.log(jsonStr);
                         _this.onLoadedChildren(response.children);
                         resolve();
                     })
