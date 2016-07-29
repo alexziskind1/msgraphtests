@@ -244,7 +244,7 @@ var ExplorerPageViewModel = (function (_super) {
         });
     };
     ExplorerPageViewModel.prototype.showErrorAlert = function (error) {
-        confirm(error);
+        alert(error);
     };
     return ExplorerPageViewModel;
 }(observable_1.Observable));

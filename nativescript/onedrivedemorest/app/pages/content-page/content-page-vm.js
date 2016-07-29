@@ -47,7 +47,7 @@ var ContentPageViewModel = (function (_super) {
         });
     };
     ContentPageViewModel.prototype.showErrorAlert = function (error) {
-        //confirm(error);
+        alert(error);
         console.error(error);
     };
     return ContentPageViewModel;

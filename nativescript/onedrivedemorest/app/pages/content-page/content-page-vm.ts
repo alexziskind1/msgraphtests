@@ -55,7 +55,7 @@ export class ContentPageViewModel extends Observable {
     }
 
     private showErrorAlert(error) {
-        //confirm(error);
+        alert(error);
         console.error(error);
     }
     

@@ -258,6 +258,6 @@ export class ExplorerPageViewModel extends Observable implements DriveItem {
 
 
     private showErrorAlert(error) {
-        confirm(error);
+        alert(error);
     }
 }
