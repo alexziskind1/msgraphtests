@@ -20,19 +20,6 @@ export class HelloWorldModel extends observable.Observable {
 
         // Initialize default values.
         this._counter = 42;
-        this.updateMessage();
     }
 
-    private updateMessage() {
-        if (this._counter <= 0) {
-            this.message = "Hoorraaay! You unlocked the NativeScript clicker achievement!";
-        } else {
-            this.message = this._counter + " taps left";
-        }
-    }
-
-    public onTap() {
-        this._counter--;
-        this.updateMessage();
-    }
 }

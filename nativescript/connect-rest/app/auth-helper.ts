@@ -3,14 +3,14 @@
  * See LICENSE in the project root for license information.
  */
 var OAuth = require('oauth');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 // The application registration (must match Azure AD config)
-var credentials = {
+export var credentials = {
   authority: 'https://login.microsoftonline.com/common',
   authorize_endpoint: '/oauth2/v2.0/authorize',
   token_endpoint: '/oauth2/v2.0/token',
-  client_id: 'fe3ebdc0-f108-4cea-9757-95cc0638787e',
+  client_id: '39bc7e5f-816f-430b-8dc2-801076540c99',
   client_secret: 'DHyKa8sr04Xop5hPtiYWKiE',
   redirect_uri: 'urn:ietf:wg:oauth:2.0:oob',
   scope: 'Files.ReadWrite User.Read Mail.Send offline_access'
@@ -20,7 +20,7 @@ var credentials = {
  * Generate a fully formed uri to use for authentication based on the supplied resource argument
  * @return {string} a fully formed uri with which authentication can be completed
  */
-function getAuthUrl() {
+export function getAuthUrl() {
   return credentials.authority + credentials.authorize_endpoint +
     '?client_id=' + credentials.client_id +
     '&response_type=code' +
@@ -36,7 +36,7 @@ function getAuthUrl() {
  * @param {string} code An authorization code returned from a client.
  * @param {AcquireTokenCallback} callback The callback function.
  */
-function getTokenFromCode(code, callback) {
+export function getTokenFromCode(code, callback) {
   var OAuth2 = OAuth.OAuth2;
   var oauth2 = new OAuth2(
     credentials.client_id,
@@ -68,7 +68,7 @@ function getTokenFromCode(code, callback) {
  *                       from a previous result of an authentication flow.
  * @param {AcquireTokenCallback} callback The callback function.
  */
-function getTokenFromRefreshToken(refreshToken, callback) {
+export function getTokenFromRefreshToken(refreshToken, callback) {
   var OAuth2 = OAuth.OAuth2;
   var oauth2 = new OAuth2(
     credentials.client_id,
@@ -93,9 +93,5 @@ function getTokenFromRefreshToken(refreshToken, callback) {
   );
 }
 
-exports.credentials = credentials;
-exports.getAuthUrl = getAuthUrl;
-exports.getTokenFromCode = getTokenFromCode;
-exports.getTokenFromRefreshToken = getTokenFromRefreshToken;
-exports.ACCESS_TOKEN_CACHE_KEY = 'ACCESS_TOKEN_CACHE_KEY';
-exports.REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
+export var ACCESS_TOKEN_CACHE_KEY = 'ACCESS_TOKEN_CACHE_KEY';
+export var REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
