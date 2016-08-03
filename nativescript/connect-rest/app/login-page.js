@@ -2,7 +2,8 @@
 var observable_1 = require("data/observable");
 var web_view_1 = require("ui/web-view");
 //import * as authHelperModule from './auth-helper';
-var authHelper2Module = require('./auth-helper2');
+var o365AuthHelper = require('./o365-auth-helper');
+var tnsOauth = require('./tns-oauth');
 var my_webview_delegate_1 = require('./my-webview-delegate');
 var LoginPageModel = (function (_super) {
     __extends(LoginPageModel, _super);
@@ -47,7 +48,7 @@ var LoginPageModel = (function (_super) {
         */
     LoginPageModel.prototype.onTap = function () {
         console.log('onTap called');
-        this._webView.url = authHelper2Module.getAuthUrl();
+        this._webView.url = tnsOauth.getAuthUrl(o365AuthHelper.office365Credentials);
     };
     LoginPageModel.prototype.navigatingTo = function (args) {
         var _this = this;

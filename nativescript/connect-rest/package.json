@@ -10,8 +10,6 @@
     }
   },
   "dependencies": {
-    "node-uuid": "^1.4.7",
-    "oauth": "^0.9.14",
     "tns-core-modules": "2.1.0"
   },
   "devDependencies": {

@@ -2,6 +2,105 @@
 var querystring = require('querystring');
 var URL = require('url');
 var http = require('http');
+var frameModule = require('ui/frame');
+var uuid = require('./auth-uuid');
+var tns_oauth_page_provider_1 = require('./tns-oauth-page-provider');
+exports.ACCESS_TOKEN_CACHE_KEY = 'ACCESS_TOKEN_CACHE_KEY';
+exports.REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
+/**
+ * Gets a token for a given resource.
+ */
+function getTokenFromCode(credentials, code) {
+    var oauth2 = new TnsOAuth(credentials.clientId, credentials.authority, credentials.authorizeEndpoint, credentials.tokenEndpoint);
+    var oauthParams = {
+        grant_type: 'authorization_code',
+        redirect_uri: credentials.redirectUri,
+        response_mode: 'form_post',
+        nonce: uuid.doit(),
+        state: 'abcd'
+    };
+    return oauth2.getOAuthAccessToken(code, oauthParams);
+}
+/**
+ * Gets a new access token via a previously issued refresh token.
+ */
+function getTokenFromRefreshToken(credentials, refreshToken) {
+    var oauth2 = new TnsOAuth(credentials.clientId, credentials.authority, credentials.authorizeEndpoint, credentials.tokenEndpoint);
+    var oauthParams = {
+        grant_type: 'refresh_token',
+        redirect_uri: credentials.redirectUri,
+        response_mode: 'form_post',
+        nonce: uuid.doit(),
+        state: 'abcd'
+    };
+    return oauth2.getOAuthAccessToken(refreshToken, oauthParams);
+}
+exports.getTokenFromRefreshToken = getTokenFromRefreshToken;
+/**
+ * Generate a fully formed uri to use for authentication based on the supplied resource argument
+ * @return {string} a fully formed uri with which authentication can be completed
+ */
+function getAuthUrl(credentials) {
+    return credentials.authority + credentials.authorizeEndpoint +
+        '?client_id=' + credentials.clientId +
+        '&response_type=code' +
+        '&redirect_uri=' + credentials.redirectUri +
+        '&scope=' + credentials.scope +
+        '&response_mode=query' +
+        '&nonce=' + uuid.doit() +
+        '&state=abcd';
+}
+exports.getAuthUrl = getAuthUrl;
+function loginViaAuthorizationCodeFlow(credentials, successPage) {
+    return new Promise(function (resolve, reject) {
+        var navCount = 0;
+        var checkInterceptError = function (webView, error) {
+            var retStr = '';
+            try {
+                if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
+                    retStr = error.userInfo.allValues[0].absoluteString;
+                }
+            }
+            catch (er) {
+                console.error('retStr error occurred...');
+                console.dir(er);
+            }
+            if (retStr.indexOf('code=') > 0) {
+                var idx1 = retStr.indexOf('code=');
+                var idx2 = retStr.indexOf('&');
+                var codeStr = retStr.substring(idx1 + 5, idx2);
+                try {
+                    getTokenFromCode(credentials, codeStr)
+                        .then(function (response) {
+                        if (successPage && navCount === 0) {
+                            var navEntry = {
+                                moduleName: successPage,
+                                clearHistory: true
+                            };
+                            frameModule.topmost().navigate(navEntry);
+                        }
+                        else {
+                            frameModule.topmost().goBack();
+                        }
+                        navCount++;
+                        resolve(response);
+                    })
+                        .catch(function (er) {
+                        reject(er);
+                    });
+                }
+                catch (er) {
+                    console.error('getOAuthAccessToken error occurred...');
+                    console.dir(er);
+                    reject(er);
+                }
+            }
+        };
+        var authPage = new tns_oauth_page_provider_1.TnsOAuthPageProvider(checkInterceptError, getAuthUrl(credentials));
+        frameModule.topmost().navigate(function () { return authPage.loginPageFunc(); });
+    });
+}
+exports.loginViaAuthorizationCodeFlow = loginViaAuthorizationCodeFlow;
 var TnsOAuth = (function () {
     function TnsOAuth(clientId, baseSite, authorizePath, accessTokenPath, customHeaders) {
         this._clientId = clientId;
@@ -50,7 +149,8 @@ var TnsOAuth = (function () {
         params['client_id'] = this._clientId;
         return this._baseSite + this._authorizeUrl + "?" + querystring.stringify(params);
     };
-    TnsOAuth.prototype.getOAuthAccessToken = function (code, params, callback) {
+    TnsOAuth.prototype.getOAuthAccessToken = function (code, params) {
+        var _this = this;
         console.log('called TnsOAuth.getOAuthAccessToken');
         var params = params || {};
         params['client_id'] = this._clientId;
@@ -60,38 +160,34 @@ var TnsOAuth = (function () {
         var post_headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
-        this._request("POST", this.accessTokenUrl, post_headers, post_data, null, function (error, data, response) {
-            if (error) {
-                callback(error);
-            }
-            else {
+        return new Promise(function (resolve, reject) {
+            _this._request("POST", _this.accessTokenUrl, post_headers, post_data, null)
+                .then(function (response) {
                 var results;
                 try {
                     // As of http://tools.ietf.org/html/draft-ietf-oauth-v2-07
                     // responses should be in JSON
-                    results = JSON.parse(data);
+                    results = response.content.toJSON();
                 }
                 catch (e) {
                     // .... However both Facebook + Github currently use rev05 of the spec
                     // and neither seem to specify a content-type correctly in their response headers :(
                     // clients of these services will suffer a *minor* performance cost of the exception
                     // being thrown
-                    results = querystring.parse(data);
+                    results = querystring.parse(response.content.toString());
                 }
                 var access_token = results["access_token"];
                 var refresh_token = results["refresh_token"];
                 delete results["refresh_token"];
-                callback(null, access_token, refresh_token, results); // callback results =-=
-            }
+                resolve({ accessToken: access_token, refreshToken: refresh_token });
+            })
+                .catch(function (er) {
+                reject(er);
+            });
         });
     };
-    TnsOAuth.prototype._request = function (method, url, headers, post_body, access_token, callback) {
+    TnsOAuth.prototype._request = function (method, url, headers, post_body, access_token) {
         var parsedUrl = URL.parse(url, true);
-        /*
-        if( parsedUrl.protocol == "https:" && !parsedUrl.port ) {
-            parsedUrl.port= 443;
-        }*/
-        //var http_library = this._chooseHttpLibrary( parsedUrl );
         var realHeaders = {};
         for (var key in this._customHeaders) {
             realHeaders[key] = this._customHeaders[key];
@@ -102,22 +198,6 @@ var TnsOAuth = (function () {
             }
         }
         realHeaders['Host'] = parsedUrl.host;
-        /*
-        if (!realHeaders['User-Agent']) {
-            realHeaders['User-Agent'] = 'tns-oauth';
-        }
-        */
-        /*
-        if (post_body) {
-            if (Buffer.isBuffer(post_body)) {
-                realHeaders["Content-Length"]= post_body.length;
-            } else {
-                realHeaders["Content-Length"]= Buffer.byteLength(post_body);
-            }
-        } else {
-            realHeaders["Content-length"]= 0;
-        }
-        */
         if (access_token && !('Authorization' in realHeaders)) {
             if (!parsedUrl.query) {
                 parsedUrl.query = {};
@@ -135,25 +215,17 @@ var TnsOAuth = (function () {
             method: method,
             headers: realHeaders
         };
-        this._executeRequest(options, post_body, callback);
+        return this._executeRequest(options, url, post_body);
     };
-    TnsOAuth.prototype._executeRequest = function (options, post_body, callback) {
-        var callbackCalled = false;
-        var request = http.request({
-            url: this.accessTokenUrl,
+    TnsOAuth.prototype._executeRequest = function (options, url, post_body) {
+        var promise = http.request({
+            url: url,
             method: options.method,
             headers: options.headers,
             content: post_body
-        })
-            .then(function (response) {
-            callback(response);
-        })
-            .catch(function (er) {
-            callbackCalled = true;
-            callback(er);
         });
+        return promise;
     };
     return TnsOAuth;
 }());
-exports.TnsOAuth = TnsOAuth;
 //# sourceMappingURL=tns-oauth.js.map

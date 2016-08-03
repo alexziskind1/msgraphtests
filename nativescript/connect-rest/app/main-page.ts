@@ -2,8 +2,8 @@ import { EventData } from "data/observable";
 import { Page } from "ui/page";
 import { HelloWorldModel } from "./main-view-model";
 import * as frameModule from 'ui/frame';
-import * as authHelper2Module from './auth-helper2';
-import { TokenResult } from './auth-interfaces';
+import * as o365AuthHelper from './o365-auth-helper';
+
 
 // Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
@@ -13,15 +13,13 @@ export function navigatingTo(args: EventData) {
 }
 
 export function onTap() {
-    authHelper2Module.loginViaAuthorizationCodeFlow('main-page')
-        .then((result: TokenResult)=>{
-            var accessToken = result.accessToken;
-            var refreshToken = result.refreshToken;
-            console.dir(result);
+    o365AuthHelper.login('main-page')
+        .then(()=>{
+            console.log('login successful');
+            console.dir(o365AuthHelper.office365TokenSet);
         })
         .catch((er)=>{
             console.error('login failed');
             console.dir(er);
         });
-    //frameModule.topmost().navigate('login-page');
 }

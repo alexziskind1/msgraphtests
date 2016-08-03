@@ -1,6 +1,6 @@
 "use strict";
-var common = require("ui/web-view");
 var trace = require("trace");
+var web_view_1 = require('ui/web-view');
 var TnsOAuthWebViewDelegateImpl = (function (_super) {
     __extends(TnsOAuthWebViewDelegateImpl, _super);
     function TnsOAuthWebViewDelegateImpl() {
@@ -16,28 +16,28 @@ var TnsOAuthWebViewDelegateImpl = (function (_super) {
     TnsOAuthWebViewDelegateImpl.prototype.webViewShouldStartLoadWithRequestNavigationType = function (webView, request, navigationType) {
         var owner = this._owner.get();
         if (owner && request.URL) {
-            var navTypeIndex = common.WebView.navigationTypes.indexOf("other");
+            var navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("other");
             switch (navigationType) {
                 case UIWebViewNavigationType.LinkClicked:
-                    navTypeIndex = common.WebView.navigationTypes.indexOf("linkClicked");
+                    navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("linkClicked");
                     break;
                 case UIWebViewNavigationType.FormSubmitted:
-                    navTypeIndex = common.WebView.navigationTypes.indexOf("formSubmitted");
+                    navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("formSubmitted");
                     break;
                 case UIWebViewNavigationType.BackForward:
-                    navTypeIndex = common.WebView.navigationTypes.indexOf("backForward");
+                    navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("backForward");
                     break;
                 case UIWebViewNavigationType.Reload:
-                    navTypeIndex = common.WebView.navigationTypes.indexOf("reload");
+                    navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("reload");
                     break;
                 case UIWebViewNavigationType.FormResubmitted:
-                    navTypeIndex = common.WebView.navigationTypes.indexOf("formResubmitted");
+                    navTypeIndex = web_view_1.WebView.navigationTypes.indexOf("formResubmitted");
                     break;
             }
             if (trace.enabled) {
                 trace.write("UIWebViewDelegateClass.webViewShouldStartLoadWithRequestNavigationType(" + request.URL.absoluteString + ", " + navigationType + ")", trace.categories.Debug);
             }
-            owner._onLoadStarted(request.URL.absoluteString, common.WebView.navigationTypes[navTypeIndex]);
+            owner._onLoadStarted(request.URL.absoluteString, web_view_1.WebView.navigationTypes[navTypeIndex]);
         }
         return true;
     };
@@ -83,4 +83,4 @@ var TnsOAuthWebViewDelegateImpl = (function (_super) {
     return TnsOAuthWebViewDelegateImpl;
 }(NSObject));
 exports.TnsOAuthWebViewDelegateImpl = TnsOAuthWebViewDelegateImpl;
-//# sourceMappingURL=auth-webview.js.map
+//# sourceMappingURL=tns-oauth-webview.js.map

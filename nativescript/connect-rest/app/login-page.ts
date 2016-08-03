@@ -2,7 +2,8 @@ import { EventData, Observable } from "data/observable";
 import { Page } from "ui/page";
 import { WebView, LoadEventData } from "ui/web-view";
 //import * as authHelperModule from './auth-helper';
-import * as authHelper2Module from './auth-helper2';
+import * as o365AuthHelper from './o365-auth-helper';
+import * as tnsOauth from './tns-oauth';
 import { MyWebViewDelegateImpl } from './my-webview-delegate';
 import * as trace from "trace";
 
@@ -55,7 +56,8 @@ export class LoginPageModel extends Observable {
 
     public onTap() {
         console.log('onTap called');
-        this._webView.url = authHelper2Module.getAuthUrl();
+        this._webView.url = tnsOauth.getAuthUrl(o365AuthHelper.office365Credentials);
+
     }
 
     public navigatingTo(args: EventData) {

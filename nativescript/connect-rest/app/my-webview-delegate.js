@@ -10,7 +10,6 @@ var MyWebViewDelegateImpl = (function (_super) {
     function MyWebViewDelegateImpl(customHeaders) {
         _super.call(this);
         this._clientId = authHelper2Module.credentials.client_id;
-        this._clientSecret = authHelper2Module.credentials.client_secret;
         this._baseSite = authHelper2Module.credentials.authority;
         this._authorizeUrl = authHelper2Module.credentials.authorize_endpoint;
         this._accessTokenUrl = authHelper2Module.credentials.token_endpoint;
