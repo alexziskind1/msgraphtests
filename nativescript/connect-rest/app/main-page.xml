@@ -1,5 +1,7 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
   <StackLayout>
-    <Button text="Goto login" tap="onTap" />
+    <Button text="Login o365" tap="onTapO365" />
+    <Button text="Login Facebook" tap="onTapFacebook" />
+    <Button text="Login google" tap="onTapGoogle" />
   </StackLayout>
 </Page>

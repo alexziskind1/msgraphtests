@@ -6,17 +6,21 @@ import { TnsOAuthWebViewDelegateImpl } from './tns-oauth-webview';
 
 
 export class TnsOAuthPageProvider {
-    private _checkInterceptError: ()=>{};
+    private _checkCodeIntercept: ()=>{};
+    //private _checkApproval: ()=>{};
+    //private _checkInterceptError: ()=>{};
     private _authUrl: string;
 
-    constructor(checkInterceptError, authUrl) {
-        this._checkInterceptError = checkInterceptError;
+    constructor(checkCodeIntercept, authUrl) {
+        this._checkCodeIntercept = checkCodeIntercept;
+        //this._checkApproval = checkApproval;
+        //this._checkInterceptError = checkInterceptError;
         this._authUrl = authUrl;
     }
 
     public loginPageFunc() {
         let wv = new WebView();
-        (<any>wv)._delegate = TnsOAuthWebViewDelegateImpl.initWithOwner(new WeakRef(wv), this._checkInterceptError);
+        (<any>wv)._delegate = TnsOAuthWebViewDelegateImpl.initWithOwner(new WeakRef(wv), this._checkCodeIntercept);
 
         let grid = new GridLayout();
         grid.addChild(wv);

@@ -1,22 +1,43 @@
 import { EventData } from "data/observable";
 import { Page } from "ui/page";
-import { HelloWorldModel } from "./main-view-model";
-import * as frameModule from 'ui/frame';
-import * as o365AuthHelper from './o365-auth-helper';
+
+import { AuthHelperOffice365 } from './auth-helper-office365';
+import { AuthHelperFacebook } from './auth-helper-facebook';
+import { AuthHelperGoogle } from './auth-helper-google';
+import { TnsAuthHelper } from './tns-oauth-interfaces';
 
 
-// Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
-    // Get the event sender
     var page = <Page>args.object;
-    page.bindingContext = new HelloWorldModel();
 }
 
-export function onTap() {
-    o365AuthHelper.login('main-page')
+export function onTapO365() {
+    let clientId = 'e392f6aa-da5c-434d-a42d-a0e0a27d3964';
+    let scope = ['Files.ReadWrite', 'offline_access'];
+    let authHelper = new AuthHelperOffice365(clientId, scope);
+    onLoginTap(authHelper);
+}
+
+export function onTapGoogle() {
+    let clientId = '';
+    let scope = ['email', 'profile'];
+    let authHelper = new AuthHelperGoogle(clientId, scope);
+    onLoginTap(authHelper);
+}
+
+export function onTapFacebook() {
+    let clientId = '';
+    let clientSecret = '';
+    let scope = ['email'];
+    let authHelper = new AuthHelperFacebook(clientId, clientSecret, scope);
+    onLoginTap(authHelper);
+}
+
+function onLoginTap(authHelper: TnsAuthHelper) {
+    authHelper.login('main-page')
         .then(()=>{
             console.log('login successful');
-            console.dir(o365AuthHelper.office365TokenSet);
+            console.dir(authHelper.tokenResult);
         })
         .catch((er)=>{
             console.error('login failed');

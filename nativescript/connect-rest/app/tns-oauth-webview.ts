@@ -7,13 +7,17 @@ export class TnsOAuthWebViewDelegateImpl extends NSObject implements UIWebViewDe
 
     private _owner: WeakRef<WebView>;
     private oldDelegate;
-    private _checkInterceptError;
+    private _checkCodeIntercept;
+    //private _checkApproval;
+    //private _checkInterceptError;
 
-    public static initWithOwner(owner: WeakRef<WebView>, checkInterceptError): TnsOAuthWebViewDelegateImpl {
+    public static initWithOwner(owner: WeakRef<WebView>, checkCodeIntercept): TnsOAuthWebViewDelegateImpl {
         let delegate = new TnsOAuthWebViewDelegateImpl();
         delegate._owner = owner;
         delegate.oldDelegate = owner.get().ios.delegate;
-        delegate._checkInterceptError = checkInterceptError;
+        delegate._checkCodeIntercept = checkCodeIntercept;
+        //delegate._checkApproval = checkApproval;
+        //delegate._checkInterceptError = checkInterceptError;
         return delegate;
     }
 
@@ -63,12 +67,17 @@ export class TnsOAuthWebViewDelegateImpl extends NSObject implements UIWebViewDe
         }
         let owner = this._owner.get();
         if (owner) {
+            if (this._checkCodeIntercept(webView, null)) {
+                if (trace.enabled) {
+                    trace.write("UIWebViewDelegateClass.webViewDidFinishLoad(checkApproval- intercepting)", trace.categories.Debug);
+                }
+            }
             (<any>owner)._onLoadFinished(webView.request.URL.absoluteString);
         }
     }
 
     public webViewDidFailLoadWithError(webView: UIWebView, error: NSError) {
-        if (this._checkInterceptError(webView, error)) {
+        if (this._checkCodeIntercept(webView, error)) {
             if (trace.enabled) {
                 trace.write("UIWebViewDelegateClass.webViewDidFailLoadWithError(" + error.localizedDescription + ")", trace.categories.Debug);
                 trace.write("UIWebViewDelegateClass.webViewDidFailLoadWithError(checkInterceptError - intercepting)", trace.categories.Debug);

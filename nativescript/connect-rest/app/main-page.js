@@ -1,23 +1,42 @@
 "use strict";
-var main_view_model_1 = require("./main-view-model");
-var o365AuthHelper = require('./o365-auth-helper');
-// Event handler for Page "navigatingTo" event attached in main-page.xml
+var auth_helper_office365_1 = require('./auth-helper-office365');
+var auth_helper_facebook_1 = require('./auth-helper-facebook');
+var auth_helper_google_1 = require('./auth-helper-google');
 function navigatingTo(args) {
-    // Get the event sender
     var page = args.object;
-    page.bindingContext = new main_view_model_1.HelloWorldModel();
 }
 exports.navigatingTo = navigatingTo;
-function onTap() {
-    o365AuthHelper.login('main-page')
+function onTapO365() {
+    var clientId = 'e392f6aa-da5c-434d-a42d-a0e0a27d3964';
+    var scope = ['Files.ReadWrite', 'offline_access'];
+    var authHelper = new auth_helper_office365_1.AuthHelperOffice365(clientId, scope);
+    onLoginTap(authHelper);
+}
+exports.onTapO365 = onTapO365;
+function onTapGoogle() {
+    var clientId = '527078129340-1b55k2qeb177r1b1n6apmvaqd4mpv7q2.apps.googleusercontent.com';
+    var scope = ['email', 'profile'];
+    var authHelper = new auth_helper_google_1.AuthHelperGoogle(clientId, scope);
+    onLoginTap(authHelper);
+}
+exports.onTapGoogle = onTapGoogle;
+function onTapFacebook() {
+    var clientId = '1819818654921817';
+    var clientSecret = 'b7e58f212b51e4d639bed857171c992a';
+    var scope = ['email'];
+    var authHelper = new auth_helper_facebook_1.AuthHelperFacebook(clientId, clientSecret, scope);
+    onLoginTap(authHelper);
+}
+exports.onTapFacebook = onTapFacebook;
+function onLoginTap(authHelper) {
+    authHelper.login('main-page')
         .then(function () {
-        console.error('login successful');
-        console.dir(o365AuthHelper.office365TokenSet);
+        console.log('login successful');
+        console.dir(authHelper.tokenResult);
     })
         .catch(function (er) {
         console.error('login failed');
         console.dir(er);
     });
 }
-exports.onTap = onTap;
 //# sourceMappingURL=main-page.js.map

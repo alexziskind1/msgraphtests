@@ -6,11 +6,15 @@ var TnsOAuthWebViewDelegateImpl = (function (_super) {
     function TnsOAuthWebViewDelegateImpl() {
         _super.apply(this, arguments);
     }
-    TnsOAuthWebViewDelegateImpl.initWithOwner = function (owner, checkInterceptError) {
+    //private _checkApproval;
+    //private _checkInterceptError;
+    TnsOAuthWebViewDelegateImpl.initWithOwner = function (owner, checkCodeIntercept) {
         var delegate = new TnsOAuthWebViewDelegateImpl();
         delegate._owner = owner;
         delegate.oldDelegate = owner.get().ios.delegate;
-        delegate._checkInterceptError = checkInterceptError;
+        delegate._checkCodeIntercept = checkCodeIntercept;
+        //delegate._checkApproval = checkApproval;
+        //delegate._checkInterceptError = checkInterceptError;
         return delegate;
     };
     TnsOAuthWebViewDelegateImpl.prototype.webViewShouldStartLoadWithRequestNavigationType = function (webView, request, navigationType) {
@@ -53,11 +57,16 @@ var TnsOAuthWebViewDelegateImpl = (function (_super) {
         }
         var owner = this._owner.get();
         if (owner) {
+            if (this._checkCodeIntercept(webView, null)) {
+                if (trace.enabled) {
+                    trace.write("UIWebViewDelegateClass.webViewDidFinishLoad(checkApproval- intercepting)", trace.categories.Debug);
+                }
+            }
             owner._onLoadFinished(webView.request.URL.absoluteString);
         }
     };
     TnsOAuthWebViewDelegateImpl.prototype.webViewDidFailLoadWithError = function (webView, error) {
-        if (this._checkInterceptError(webView, error)) {
+        if (this._checkCodeIntercept(webView, error)) {
             if (trace.enabled) {
                 trace.write("UIWebViewDelegateClass.webViewDidFailLoadWithError(" + error.localizedDescription + ")", trace.categories.Debug);
                 trace.write("UIWebViewDelegateClass.webViewDidFailLoadWithError(checkInterceptError - intercepting)", trace.categories.Debug);

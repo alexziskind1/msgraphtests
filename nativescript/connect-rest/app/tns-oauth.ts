@@ -3,7 +3,7 @@ import * as URL from 'url';
 import * as http from 'http';
 import * as trace from "trace";
 import * as frameModule from 'ui/frame';
-import * as uuid from './auth-uuid';
+import * as uuid from './tns-oauth-uuid';
 
 import { TnsOAuthCredentials, TnsOAuthTokenResult } from './tns-oauth-interfaces';
 import { TnsOAuthPageProvider } from './tns-oauth-page-provider';
@@ -17,7 +17,9 @@ export var REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
 function getTokenFromCode(credentials: TnsOAuthCredentials, code: string) : Promise<TnsOAuthTokenResult> {
   let oauth2 = new TnsOAuth(
     credentials.clientId,
+    credentials.clientSecret,
     credentials.authority,
+    credentials.tokenEndpointBase,
     credentials.authorizeEndpoint,
     credentials.tokenEndpoint
   );
@@ -39,7 +41,9 @@ function getTokenFromCode(credentials: TnsOAuthCredentials, code: string) : Prom
 export function getTokenFromRefreshToken(credentials: TnsOAuthCredentials, refreshToken: string) : Promise<TnsOAuthTokenResult> {
   var oauth2 = new TnsOAuth(
     credentials.clientId,
+    credentials.clientSecret,
     credentials.authority,
+    credentials.tokenEndpointBase,
     credentials.authorizeEndpoint,
     credentials.tokenEndpoint
   );
@@ -74,6 +78,91 @@ export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthCredentials, 
     return new Promise((resolve, reject) => {
         var navCount = 0;
       
+
+        let checkCodeIntercept = (webView, error) => {
+            var retStr = '';
+
+            if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
+                retStr = error.userInfo.allValues[0].absoluteString;
+            } else {
+                retStr = webView.request.URL.absoluteString;
+            }
+
+            var qsObj = querystring.parse(URL.parse(retStr).query);
+            let codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
+            
+            if (codeStr) {
+                try {
+                    getTokenFromCode(credentials, codeStr)
+                    .then((response: TnsOAuthTokenResult)=>{
+                        if (successPage && navCount === 0) {
+                            let navEntry: frameModule.NavigationEntry = {
+                                moduleName: successPage,
+                              clearHistory: true
+                            };
+                            frameModule.topmost().navigate(navEntry);
+                        } else {
+                            frameModule.topmost().goBack();
+                        }
+                        navCount++;
+                        resolve(response);
+                    })
+                    .catch((er)=>{
+                        reject(er);
+                    });
+
+                } catch(er) {
+                    console.error('getOAuthAccessToken error occurred...');
+                    console.dir(er);
+                    reject(er);
+                }
+            }
+        };
+
+/*
+        let checkApproval = (webView) => {
+            var retStr = webView.request.URL.absoluteString;
+            var codeStr = '';
+
+            if (retStr.indexOf('code=') > 0) {
+                var idx1 = retStr.indexOf('code=');
+                var idx2 = retStr.indexOf('&');
+                codeStr = retStr.substring(idx1 + 5, idx2);
+            }
+
+            if (retStr.indexOf('xsrfsign=') > 0) {
+                var idx1 = retStr.indexOf('xsrfsign=');
+                codeStr = retStr.substring(idx1 + 9, retStr.length);
+            }
+
+            if (codeStr != '') {
+                try {
+                    getTokenFromCode(credentials, codeStr)
+                    .then((response: TnsOAuthTokenResult)=>{
+                        if (successPage && navCount === 0) {
+                            let navEntry: frameModule.NavigationEntry = {
+                                moduleName: successPage,
+                              clearHistory: true
+                            };
+                            frameModule.topmost().navigate(navEntry);
+                        } else {
+                            frameModule.topmost().goBack();
+                        }
+                        navCount++;
+                        resolve(response);
+                    })
+                    .catch((er)=>{
+                        reject(er);
+                    });
+
+                } catch(er) {
+                    console.error('getOAuthAccessToken error occurred...');
+                    console.dir(er);
+                    reject(er);
+                }
+            }
+        };
+
         let checkInterceptError = (webView, error) => {
             var retStr = '';
             try {
@@ -117,15 +206,18 @@ export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthCredentials, 
                 }
             } 
         };
+        */
 
-        let authPage = new TnsOAuthPageProvider(checkInterceptError, getAuthUrl(credentials));
+        let authPage = new TnsOAuthPageProvider(checkCodeIntercept, getAuthUrl(credentials));
         frameModule.topmost().navigate(()=>{return authPage.loginPageFunc()});
     });
 }
 
 class TnsOAuth {
     private _clientId: string;
+    private _clientSecret: string;
     private _baseSite: string;
+    private _baseSiteToken: string;
     private _authorizeUrl: string;
     private _accessTokenUrl: string;
     private _accessTokenName: string;
@@ -133,23 +225,31 @@ class TnsOAuth {
     private _customHeaders: any;
     private _useAuthorizationHeaderForGET: boolean;
 
-    constructor(clientId: string, 
-                baseSite: string, 
+    constructor(clientId: string,
+                clientSecret: string,
+                baseSite: string,
+                baseSiteToken: string,
                 authorizePath: string, 
                 accessTokenPath: string, 
                 customHeaders?: any) {
-        this._clientId= clientId;
-        this._baseSite= baseSite;
-        this._authorizeUrl= authorizePath || "/oauth/authorize";
-        this._accessTokenUrl= accessTokenPath || "/oauth/access_token";
-        this._accessTokenName= "access_token";
-        this._authMethod= "Bearer";
+        this._clientId = clientId;
+        this._clientSecret = clientSecret;
+        this._baseSite = baseSite;
+        this._baseSiteToken = baseSiteToken;
+        this._authorizeUrl = authorizePath || "/oauth/authorize";
+        this._accessTokenUrl = accessTokenPath || "/oauth/access_token";
+        this._accessTokenName = "access_token";
+        this._authMethod = "Bearer";
         this._customHeaders = customHeaders || {};
-        this._useAuthorizationHeaderForGET= false;
+        this._useAuthorizationHeaderForGET = false;
     }
 
     get accessTokenUrl(): string {
-        return this._baseSite + this._accessTokenUrl; /* + "?" + querystring.stringify(params); */
+        if (this._baseSiteToken && this._baseSiteToken != '') {
+            return this._baseSiteToken + this._accessTokenUrl;
+        } else {
+            return this._baseSite + this._accessTokenUrl; /* + "?" + querystring.stringify(params); */
+        }
     }
 
     // This 'hack' method is required for sites that don't use
@@ -189,6 +289,9 @@ class TnsOAuth {
         console.log('called TnsOAuth.getOAuthAccessToken');
         var params= params || {};
         params['client_id'] = this._clientId;
+        if (this._clientSecret && this._clientSecret != '') {
+            params['client_secret'] = this._clientSecret;
+        }
 
         var codeParam = (params.grant_type === 'refresh_token') ? 'refresh_token' : 'code';
         params[codeParam]= code;
