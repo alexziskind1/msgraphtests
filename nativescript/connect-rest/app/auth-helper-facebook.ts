@@ -34,33 +34,3 @@ export class AuthHelperFacebook implements TnsAuthHelper {
     });
   }
 }
-
-/*
-// The application registration (must match Azure AD config)
-export var credentials: TnsOAuthCredentials = {
-  authority: 'https://www.facebook.com/dialog',
-  tokenEndpointBase: 'https://graph.facebook.com', 
-  authorizeEndpoint: '/oauth',
-  tokenEndpoint: '/v2.3/oauth/access_token',
-  clientId: '1819818654921817',
-  clientSecret: 'b7e58f212b51e4d639bed857171c992a',
-  redirectUri: 'https://www.facebook.com/connect/login_success.html',
-  scope: 'email'
-};
-
-export var tokenSet: TnsOAuthTokenResult = { accessToken: null, refreshToken: null };
-
-
-export function login(successPage?: string) {
-    return new Promise((resolve, reject)=>{
-        tnsOauth.loginViaAuthorizationCodeFlow(credentials, successPage)
-          .then((response: TnsOAuthTokenResult)=>{
-            tokenSet = response;
-            resolve();
-          })
-          .catch(()=>{
-            reject();
-          });
-    });
-}
-*/

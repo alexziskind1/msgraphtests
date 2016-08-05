@@ -14,15 +14,15 @@ function onTapO365() {
 }
 exports.onTapO365 = onTapO365;
 function onTapGoogle() {
-    var clientId = '527078129340-1b55k2qeb177r1b1n6apmvaqd4mpv7q2.apps.googleusercontent.com';
+    var clientId = '';
     var scope = ['email', 'profile'];
     var authHelper = new auth_helper_google_1.AuthHelperGoogle(clientId, scope);
     onLoginTap(authHelper);
 }
 exports.onTapGoogle = onTapGoogle;
 function onTapFacebook() {
-    var clientId = '1819818654921817';
-    var clientSecret = 'b7e58f212b51e4d639bed857171c992a';
+    var clientId = '';
+    var clientSecret = '';
     var scope = ['email'];
     var authHelper = new auth_helper_facebook_1.AuthHelperFacebook(clientId, clientSecret, scope);
     onLoginTap(authHelper);
