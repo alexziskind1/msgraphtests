@@ -1,14 +1,15 @@
 import * as tnsOauth from './tns-oauth';
 import { TnsAuthHelper, TnsOAuthCredentials, TnsOAuthTokenResult } from './tns-oauth-interfaces';
+import { AuthHelper } from './auth-helper';
 
-export class AuthHelperGoogle implements TnsAuthHelper {
+export class AuthHelperGoogle extends AuthHelper implements TnsAuthHelper {
   public credentials: TnsOAuthCredentials;
   public tokenResult: TnsOAuthTokenResult;
 
   constructor(clientId: string, scope: Array<string>) {
+    super();
 
     var scopeStr = scope.join('%20');
-
     this.credentials = {
       authority: 'https://accounts.google.com/o',
       authorizeEndpoint: '/oauth2/v2/auth',
@@ -31,4 +32,10 @@ export class AuthHelperGoogle implements TnsAuthHelper {
           });
     });
   }
+
+  public static logout(successPage: string) {
+    let cookieDomains = [".google.com"]; //need to check this
+    return AuthHelper.logout(successPage, cookieDomains);
+  }
+
 }

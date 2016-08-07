@@ -4,6 +4,7 @@ import * as http from 'http';
 import * as trace from "trace";
 import * as frameModule from 'ui/frame';
 import * as uuid from './tns-oauth-uuid';
+import * as utils from './tns-oauth-utils';
 
 import { TnsOAuthCredentials, TnsOAuthTokenResult } from './tns-oauth-interfaces';
 import { TnsOAuthPageProvider } from './tns-oauth-page-provider';
@@ -78,43 +79,51 @@ export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthCredentials, 
     return new Promise((resolve, reject) => {
         var navCount = 0;
       
-
         let checkCodeIntercept = (webView, error) => {
             var retStr = '';
 
             if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
-                retStr = error.userInfo.allValues[0].absoluteString;
-            } else {
+                let val0 = error.userInfo.allValues[0];
+                if (val0.absoluteString) {
+                    retStr = error.userInfo.allValues[0].absoluteString;
+                } else {
+                    retStr = val0;
+                } 
+            } else if (webView.request && webView.request.URL && webView.request.URL.absoluteString) {
                 retStr = webView.request.URL.absoluteString;
             }
 
-            var qsObj = querystring.parse(URL.parse(retStr).query);
-            let codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
-            
-            if (codeStr) {
-                try {
-                    getTokenFromCode(credentials, codeStr)
-                    .then((response: TnsOAuthTokenResult)=>{
-                        if (successPage && navCount === 0) {
-                            let navEntry: frameModule.NavigationEntry = {
-                                moduleName: successPage,
-                              clearHistory: true
-                            };
-                            frameModule.topmost().navigate(navEntry);
-                        } else {
-                            frameModule.topmost().goBack();
-                        }
-                        navCount++;
-                        resolve(response);
-                    })
-                    .catch((er)=>{
-                        reject(er);
-                    });
+            if (retStr != '') {
+                let parsedRetStr = URL.parse(retStr);
+                if (parsedRetStr.query) {
+                    let qsObj = querystring.parse(parsedRetStr.query);
+                    let codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
+                    if (codeStr) {
+                        try {
+                            getTokenFromCode(credentials, codeStr)
+                            .then((response: TnsOAuthTokenResult)=>{
+                                if (successPage && navCount === 0) {
+                                    let navEntry: frameModule.NavigationEntry = {
+                                        moduleName: successPage,
+                                      clearHistory: true
+                                    };
+                                    frameModule.topmost().navigate(navEntry);
+                                } else {
+                                    frameModule.topmost().goBack();
+                                }
+                                navCount++;
+                                resolve(response);
+                            })
+                            .catch((er)=>{
+                                reject(er);
+                            });
 
-                } catch(er) {
-                    console.error('getOAuthAccessToken error occurred...');
-                    console.dir(er);
-                    reject(er);
+                        } catch(er) {
+                            console.error('getOAuthAccessToken error occurred...');
+                            console.dir(er);
+                            reject(er);
+                        }
+                    }
                 }
             }
         };
@@ -122,6 +131,23 @@ export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthCredentials, 
         let authPage = new TnsOAuthPageProvider(checkCodeIntercept, getAuthUrl(credentials));
         frameModule.topmost().navigate(()=>{return authPage.loginPageFunc()});
     });
+}
+
+export function logout(cookieDomains: string[], successPage: string) {
+    let cookieArr = utils.nsArrayToJSArray(NSHTTPCookieStorage.sharedHTTPCookieStorage().cookies);
+    for (var i = 0; i < cookieArr.length; i++) {
+        var cookie: NSHTTPCookie = <NSHTTPCookie>cookieArr[i];
+        for (var j = 0; j < cookieDomains.length; j++) {
+            if(utils.endsWith(cookie.domain, cookieDomains[j])) {
+                NSHTTPCookieStorage.sharedHTTPCookieStorage().deleteCookie(cookie);
+            }
+        }
+    }
+    let navEntry: frameModule.NavigationEntry = {
+                    moduleName: successPage,
+                    clearHistory: true
+                };
+    frameModule.topmost().navigate(navEntry);
 }
 
 class TnsOAuth {

@@ -1,14 +1,15 @@
 import * as tnsOauth from './tns-oauth';
 import { TnsAuthHelper, TnsOAuthCredentials, TnsOAuthTokenResult } from './tns-oauth-interfaces';
+import { AuthHelper } from './auth-helper';
 
-export class AuthHelperFacebook implements TnsAuthHelper {
+export class AuthHelperFacebook extends AuthHelper implements TnsAuthHelper {
   public credentials: TnsOAuthCredentials;
   public tokenResult: TnsOAuthTokenResult;
 
   constructor(clientId: string, clientSecret: string, scope: Array<string>) {
+    super();
 
     var scopeStr = scope.join('%20');
-
     this.credentials = {
       authority: 'https://www.facebook.com/dialog',
       tokenEndpointBase: 'https://graph.facebook.com', 
@@ -32,5 +33,10 @@ export class AuthHelperFacebook implements TnsAuthHelper {
             reject();
           });
     });
+  }
+
+  public static logout(successPage: string) {
+    let cookieDomains = [".facebook.com"]; //need to check this
+    return AuthHelper.logout(successPage, cookieDomains);
   }
 }

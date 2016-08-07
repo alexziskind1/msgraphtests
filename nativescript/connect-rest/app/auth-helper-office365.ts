@@ -1,15 +1,16 @@
 import * as tnsOauth from './tns-oauth';
 import { TnsAuthHelper, TnsOAuthCredentials, TnsOAuthTokenResult } from './tns-oauth-interfaces';
+import { AuthHelper } from './auth-helper';
 
 
-export class AuthHelperOffice365 implements TnsAuthHelper {
+export class AuthHelperOffice365 extends AuthHelper implements TnsAuthHelper {
   public credentials: TnsOAuthCredentials;
   public tokenResult: TnsOAuthTokenResult;
 
   constructor(clientId: string, scope: Array<string>) {
+    super();
 
     var scopeStr = scope.join('%20');
-
     this.credentials = {
       authority: 'https://login.microsoftonline.com/common',
       authorizeEndpoint: '/oauth2/v2.0/authorize',
@@ -31,5 +32,10 @@ export class AuthHelperOffice365 implements TnsAuthHelper {
             reject();
           });
     });
+  }
+
+  public static logout(successPage: string) {
+    let cookieDomains = ["login.microsoftonline.com", ".live.com"];
+    return AuthHelper.logout(successPage, cookieDomains);
   }
 }

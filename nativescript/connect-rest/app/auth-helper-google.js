@@ -1,7 +1,10 @@
 "use strict";
 var tnsOauth = require('./tns-oauth');
-var AuthHelperGoogle = (function () {
+var auth_helper_1 = require('./auth-helper');
+var AuthHelperGoogle = (function (_super) {
+    __extends(AuthHelperGoogle, _super);
     function AuthHelperGoogle(clientId, scope) {
+        _super.call(this);
         var scopeStr = scope.join('%20');
         this.credentials = {
             authority: 'https://accounts.google.com/o',
@@ -25,33 +28,11 @@ var AuthHelperGoogle = (function () {
             });
         });
     };
+    AuthHelperGoogle.logout = function (successPage) {
+        var cookieDomains = [".google.com"]; //need to check this
+        return auth_helper_1.AuthHelper.logout(successPage, cookieDomains);
+    };
     return AuthHelperGoogle;
-}());
+}(auth_helper_1.AuthHelper));
 exports.AuthHelperGoogle = AuthHelperGoogle;
-/*
-export var credentials: TnsOAuthCredentials = {
-  authority: 'https://accounts.google.com/o',
-  authorizeEndpoint: '/oauth2/v2/auth',
-  tokenEndpoint: '/oauth2/v2.0/token',
-  clientId: '527078129340-1b55k2qeb177r1b1n6apmvaqd4mpv7q2.apps.googleusercontent.com',
-  redirectUri: 'urn:ietf:wg:oauth:2.0:oob',
-  scope: 'email%20profile'
-};
-
-export var tokenSet: TnsOAuthTokenResult = { accessToken: null, refreshToken: null };
-
-
-export function login(successPage?: string) {
-    return new Promise((resolve, reject)=>{
-        tnsOauth.loginViaAuthorizationCodeFlow(credentials, successPage)
-          .then((response: TnsOAuthTokenResult)=>{
-            tokenSet = response;
-            resolve();
-          })
-          .catch(()=>{
-            reject();
-          });
-    });
-}
-*/ 
 //# sourceMappingURL=auth-helper-google.js.map

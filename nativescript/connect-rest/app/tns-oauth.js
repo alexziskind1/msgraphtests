@@ -4,6 +4,7 @@ var URL = require('url');
 var http = require('http');
 var frameModule = require('ui/frame');
 var uuid = require('./tns-oauth-uuid');
+var utils = require('./tns-oauth-utils');
 var tns_oauth_page_provider_1 = require('./tns-oauth-page-provider');
 exports.ACCESS_TOKEN_CACHE_KEY = 'ACCESS_TOKEN_CACHE_KEY';
 exports.REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
@@ -57,134 +58,74 @@ function loginViaAuthorizationCodeFlow(credentials, successPage) {
         var checkCodeIntercept = function (webView, error) {
             var retStr = '';
             if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
-                retStr = error.userInfo.allValues[0].absoluteString;
+                var val0 = error.userInfo.allValues[0];
+                if (val0.absoluteString) {
+                    retStr = error.userInfo.allValues[0].absoluteString;
+                }
+                else {
+                    retStr = val0;
+                }
             }
-            else {
+            else if (webView.request && webView.request.URL && webView.request.URL.absoluteString) {
                 retStr = webView.request.URL.absoluteString;
             }
-            var qsObj = querystring.parse(URL.parse(retStr).query);
-            var codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
-            if (codeStr) {
-                try {
-                    getTokenFromCode(credentials, codeStr)
-                        .then(function (response) {
-                        if (successPage && navCount === 0) {
-                            var navEntry = {
-                                moduleName: successPage,
-                                clearHistory: true
-                            };
-                            frameModule.topmost().navigate(navEntry);
-                        }
-                        else {
-                            frameModule.topmost().goBack();
-                        }
-                        navCount++;
-                        resolve(response);
-                    })
-                        .catch(function (er) {
-                        reject(er);
-                    });
-                }
-                catch (er) {
-                    console.error('getOAuthAccessToken error occurred...');
-                    console.dir(er);
-                    reject(er);
-                }
-            }
-        };
-        /*
-                let checkApproval = (webView) => {
-                    var retStr = webView.request.URL.absoluteString;
-                    var codeStr = '';
-        
-                    if (retStr.indexOf('code=') > 0) {
-                        var idx1 = retStr.indexOf('code=');
-                        var idx2 = retStr.indexOf('&');
-                        codeStr = retStr.substring(idx1 + 5, idx2);
-                    }
-        
-                    if (retStr.indexOf('xsrfsign=') > 0) {
-                        var idx1 = retStr.indexOf('xsrfsign=');
-                        codeStr = retStr.substring(idx1 + 9, retStr.length);
-                    }
-        
-                    if (codeStr != '') {
+            if (retStr != '') {
+                var parsedRetStr = URL.parse(retStr);
+                if (parsedRetStr.query) {
+                    var qsObj = querystring.parse(parsedRetStr.query);
+                    var codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
+                    if (codeStr) {
                         try {
                             getTokenFromCode(credentials, codeStr)
-                            .then((response: TnsOAuthTokenResult)=>{
+                                .then(function (response) {
                                 if (successPage && navCount === 0) {
-                                    let navEntry: frameModule.NavigationEntry = {
+                                    var navEntry = {
                                         moduleName: successPage,
-                                      clearHistory: true
+                                        clearHistory: true
                                     };
                                     frameModule.topmost().navigate(navEntry);
-                                } else {
+                                }
+                                else {
                                     frameModule.topmost().goBack();
                                 }
                                 navCount++;
                                 resolve(response);
                             })
-                            .catch((er)=>{
+                                .catch(function (er) {
                                 reject(er);
                             });
-        
-                        } catch(er) {
+                        }
+                        catch (er) {
                             console.error('getOAuthAccessToken error occurred...');
                             console.dir(er);
                             reject(er);
                         }
                     }
-                };
-        
-                let checkInterceptError = (webView, error) => {
-                    var retStr = '';
-                    try {
-                        if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
-                            retStr = error.userInfo.allValues[0].absoluteString;
-                        }
-                    }
-                    catch(er) {
-                        console.error('retStr error occurred...');
-                        console.dir(er);
-                    }
-        
-                    if (retStr.indexOf('code=') > 0) {
-                        var idx1 = retStr.indexOf('code=');
-                        var idx2 = retStr.indexOf('&');
-                        var codeStr = retStr.substring(idx1 + 5, idx2);
-                        
-                        try {
-                          getTokenFromCode(credentials, codeStr)
-                            .then((response: TnsOAuthTokenResult)=>{
-                                if (successPage && navCount === 0) {
-                                  let navEntry: frameModule.NavigationEntry = {
-                                      moduleName: successPage,
-                                      clearHistory: true
-                                  };
-                                  frameModule.topmost().navigate(navEntry);
-                                } else {
-                                  frameModule.topmost().goBack();
-                                }
-                                navCount++;
-                                resolve(response);
-                            })
-                            .catch((er)=>{
-                              reject(er);
-                            });
-        
-                        } catch(er) {
-                            console.error('getOAuthAccessToken error occurred...');
-                            console.dir(er);
-                            reject(er);
-                        }
-                    }
-                };
-                */
+                }
+            }
+        };
         var authPage = new tns_oauth_page_provider_1.TnsOAuthPageProvider(checkCodeIntercept, getAuthUrl(credentials));
         frameModule.topmost().navigate(function () { return authPage.loginPageFunc(); });
     });
 }
 exports.loginViaAuthorizationCodeFlow = loginViaAuthorizationCodeFlow;
+function logout(cookieDomains, successPage) {
+    var cookieArr = utils.nsArrayToJSArray(NSHTTPCookieStorage.sharedHTTPCookieStorage().cookies);
+    for (var i = 0; i < cookieArr.length; i++) {
+        var cookie = cookieArr[i];
+        for (var j = 0; j < cookieDomains.length; j++) {
+            if (utils.endsWith(cookie.domain, cookieDomains[j])) {
+                NSHTTPCookieStorage.sharedHTTPCookieStorage().deleteCookie(cookie);
+            }
+        }
+    }
+    var navEntry = {
+        moduleName: successPage,
+        clearHistory: true
+    };
+    frameModule.topmost().navigate(navEntry);
+}
+exports.logout = logout;
 var TnsOAuth = (function () {
     function TnsOAuth(clientId, clientSecret, baseSite, baseSiteToken, authorizePath, accessTokenPath, customHeaders) {
         this._clientId = clientId;

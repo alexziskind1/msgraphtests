@@ -1,7 +1,10 @@
 "use strict";
 var tnsOauth = require('./tns-oauth');
-var AuthHelperFacebook = (function () {
+var auth_helper_1 = require('./auth-helper');
+var AuthHelperFacebook = (function (_super) {
+    __extends(AuthHelperFacebook, _super);
     function AuthHelperFacebook(clientId, clientSecret, scope) {
+        _super.call(this);
         var scopeStr = scope.join('%20');
         this.credentials = {
             authority: 'https://www.facebook.com/dialog',
@@ -27,36 +30,11 @@ var AuthHelperFacebook = (function () {
             });
         });
     };
+    AuthHelperFacebook.logout = function (successPage) {
+        var cookieDomains = [".facebook.com"]; //need to check this
+        return auth_helper_1.AuthHelper.logout(successPage, cookieDomains);
+    };
     return AuthHelperFacebook;
-}());
+}(auth_helper_1.AuthHelper));
 exports.AuthHelperFacebook = AuthHelperFacebook;
-/*
-// The application registration (must match Azure AD config)
-export var credentials: TnsOAuthCredentials = {
-  authority: 'https://www.facebook.com/dialog',
-  tokenEndpointBase: 'https://graph.facebook.com',
-  authorizeEndpoint: '/oauth',
-  tokenEndpoint: '/v2.3/oauth/access_token',
-  clientId: '1819818654921817',
-  clientSecret: 'b7e58f212b51e4d639bed857171c992a',
-  redirectUri: 'https://www.facebook.com/connect/login_success.html',
-  scope: 'email'
-};
-
-export var tokenSet: TnsOAuthTokenResult = { accessToken: null, refreshToken: null };
-
-
-export function login(successPage?: string) {
-    return new Promise((resolve, reject)=>{
-        tnsOauth.loginViaAuthorizationCodeFlow(credentials, successPage)
-          .then((response: TnsOAuthTokenResult)=>{
-            tokenSet = response;
-            resolve();
-          })
-          .catch(()=>{
-            reject();
-          });
-    });
-}
-*/ 
 //# sourceMappingURL=auth-helper-facebook.js.map
