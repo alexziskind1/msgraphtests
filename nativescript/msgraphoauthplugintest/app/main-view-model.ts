@@ -19,9 +19,10 @@ export class HelloWorldModel extends observable.Observable {
 
         this.msGraphClient = SDKHelper.GetAuthenticatedClient();
         
-        //this.msGraphClient.Me.Drive.Root;
+        //var drive = this.msGraphClient.Me.Drive.Request().Get();
+        var driveRoot = this.msGraphClient.Me.Drive.Root.Request().Get();
         //this.msGraphClient.Me.Request().Select("mail,userPrincipalName").GetAsync();
-        var user = this.msGraphClient.Me.Request().Get();
+        //var user = this.msGraphClient.Me.Request().Get();
         
     }
 }

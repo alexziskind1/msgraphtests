@@ -47,14 +47,17 @@ var EntityRequest = (function (_super) {
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> for the request.</param>
     /// <returns>The Entity.</returns>
     EntityRequest.prototype.Get = function (cancellationToken) {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            //TODO convert this
-            /*
-        this.Method = "GET";
-        var retrievedEntity = <Entity>this.Send(null, cancellationToken);
-        this.InitializeCollectionProperties(retrievedEntity);
-        return retrievedEntity;
-            */
+            _this.Method = "GET";
+            _this.Send(null, cancellationToken)
+                .then(function (result) {
+                //this.InitializeCollectionProperties(retrievedEntity);
+                resolve();
+            })
+                .catch(function () {
+                reject();
+            });
         });
     };
     /// <summary>

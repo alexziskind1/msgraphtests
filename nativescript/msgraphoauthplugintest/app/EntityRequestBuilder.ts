@@ -1,11 +1,11 @@
 import { IBaseClient } from './IBaseClient';
 import { BaseRequestBuilder } from './BaseRequestBuilder';
-//import {IEntityRequestBuilder} from './IEntityRequestBuilder';
+import {IEntityRequestBuilder} from './IEntityRequestBuilder';
 import {Option} from './Option';
 import {IEntityRequest} from './IEntityRequest';
 import {EntityRequest} from './EntityRequest';
 
-export class EntityRequestBuilder extends BaseRequestBuilder implements Microsoft.Graph.EntityRequestBuilder {
+export class EntityRequestBuilder extends BaseRequestBuilder implements IEntityRequestBuilder {
     constructor(requestUrl: string, client: IBaseClient) {
         super(requestUrl, client);
     }

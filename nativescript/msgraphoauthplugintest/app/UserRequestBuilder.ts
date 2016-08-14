@@ -1,6 +1,7 @@
 import {IBaseClient} from './IBaseClient';
 import {DirectoryObjectRequestBuilder} from './DirectoryObjectRequestBuilder';
 import {DriveRequestBuilder} from './DriveRequestBuilder';
+import {IDriveRequestBuilder} from './IDriveRequestBuilder';
 import {Option} from './Option';
 import {IUserRequest} from './IUserRequest';
 import {UserRequest} from './UserRequest';
@@ -31,7 +32,7 @@ export class UserRequestBuilder extends DirectoryObjectRequestBuilder implements
         super(requestUrl, client);
     }
 
-    public get Drive() : Microsoft.Graph.IDriveRequestBuilder {
+    public get Drive() : IDriveRequestBuilder {
         return new DriveRequestBuilder(this.AppendSegmentToRequestUrl("drive"), this.Client);
     }
 

@@ -1,26 +1,27 @@
 "use strict";
 var BaseRequest_1 = require('./BaseRequest');
-var UserRequest = (function (_super) {
-    __extends(UserRequest, _super);
-    function UserRequest(requestUrl, client, options) {
+var QueryOption_1 = require('./QueryOption');
+var DriveRequest = (function (_super) {
+    __extends(DriveRequest, _super);
+    function DriveRequest(requestUrl, client, options) {
         _super.call(this, requestUrl, client, options);
     }
-    UserRequest.prototype.Create = function (userToCreate, cancellationToken) {
+    DriveRequest.prototype.Create = function (driveToCreate, cancellationToken) {
         return new Promise(function (resolve, reject) {
             //TODO convert this
             /*
         this.ContentType = "application/json";
         this.Method = "PUT";
-        var newEntity = <Microsoft.Graph.User>this.Send(userToCreate, cancellationToken);
+        var newEntity = <Microsoft.Graph.Drive>this.Send(driveToCreate, cancellationToken);
         this.InitializeCollectionProperties(newEntity);
         return newEntity;
             */
         });
     };
-    UserRequest.prototype.Delete = function (cancellationToken) {
+    DriveRequest.prototype.Delete = function (cancellationToken) {
         //TODO:
     };
-    UserRequest.prototype.Get = function (cancellationToken) {
+    DriveRequest.prototype.Get = function (cancellationToken) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.Send(null)
@@ -34,28 +35,36 @@ var UserRequest = (function (_super) {
             //TODO convert this
             /*
         this.Method = "GET";
-        var retrievedEntity = <Microsoft.Graph.User> this.Send(null, cancellationToken);
+        var retrievedEntity = <Microsoft.Graph.Drive> this.Send(null, cancellationToken);
         this.InitializeCollectionProperties(retrievedEntity);
         return retrievedEntity;
             */
         });
     };
-    UserRequest.prototype.Update = function (userToUpdate, cancellationToken) {
+    DriveRequest.prototype.Update = function (driveToUpdate, cancellationToken) {
         return new Promise(function (resolve, reject) {
             //TODO convert this
             /*
          this.ContentType = "application/json";
         this.Method = "PATCH";
-        var updatedEntity = <Microsoft.Graph.User>  this.Send(userToUpdate, cancellationToken);
+        var updatedEntity = <Microsoft.Graph.Drive>  this.Send(driveToUpdate, cancellationToken);
         this.InitializeCollectionProperties(updatedEntity);
         return updatedEntity;
             */
         });
     };
-    UserRequest.prototype.InitializeCollectionProperties = function (userToInitialize) {
+    DriveRequest.prototype.Expand = function (value) {
+        this.QueryOptions.push(new QueryOption_1.QueryOption("$expand", value));
+        return this;
+    };
+    DriveRequest.prototype.Select = function (value) {
+        this.QueryOptions.push(new QueryOption_1.QueryOption("$select", value));
+        return this;
+    };
+    DriveRequest.prototype.InitializeCollectionProperties = function (driveToInitialize) {
         //TODO
     };
-    return UserRequest;
+    return DriveRequest;
 }(BaseRequest_1.BaseRequest));
-exports.UserRequest = UserRequest;
-//# sourceMappingURL=UserRequest.js.map
+exports.DriveRequest = DriveRequest;
+//# sourceMappingURL=DriveRequest.js.map

@@ -5,6 +5,7 @@ import {Option} from './Option';
 import {QueryOption} from './QueryOption';
 import {Entity} from './Entity';
 import {CancellationToken} from './CancellationToken';
+import * as http from 'http';
 
 export class EntityRequest extends BaseRequest implements IEntityRequest {
         /// <summary>
@@ -58,15 +59,16 @@ export class EntityRequest extends BaseRequest implements IEntityRequest {
         /// <returns>The Entity.</returns>
         public Get( cancellationToken?:CancellationToken) : Promise<Entity> {
             return new Promise<Entity>((resolve, reject)=>{
-                //TODO convert this
-                /*
-            this.Method = "GET";
-            var retrievedEntity = <Entity>this.Send(null, cancellationToken);
-            this.InitializeCollectionProperties(retrievedEntity);
-            return retrievedEntity;
-                */
+                this.Method = "GET";
+                this.Send(null, cancellationToken)
+                    .then((result: http.HttpResponse)=>{
+                        //this.InitializeCollectionProperties(retrievedEntity);
+                        resolve();
+                    })
+                    .catch(()=>{
+                        reject();
+                    });
             });
-
         }
 
 

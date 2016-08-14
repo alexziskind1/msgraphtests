@@ -12,9 +12,10 @@ var HelloWorldModel = (function (_super) {
     };
     HelloWorldModel.prototype.onTapGetData = function () {
         this.msGraphClient = SDKHelper_1.SDKHelper.GetAuthenticatedClient();
-        //this.msGraphClient.Me.Drive.Root;
+        //var drive = this.msGraphClient.Me.Drive.Request().Get();
+        var driveRoot = this.msGraphClient.Me.Drive.Root.Request().Get();
         //this.msGraphClient.Me.Request().Select("mail,userPrincipalName").GetAsync();
-        var user = this.msGraphClient.Me.Request().Get();
+        //var user = this.msGraphClient.Me.Request().Get();
     };
     return HelloWorldModel;
 }(observable.Observable));

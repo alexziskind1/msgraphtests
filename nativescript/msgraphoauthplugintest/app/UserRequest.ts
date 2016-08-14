@@ -28,7 +28,7 @@ export class UserRequest extends BaseRequest implements IUserRequest {
         });
     }
 
-    public Delete() {
+    public Delete( cancellationToken?:CancellationToken) {
         //TODO:
     }
 
