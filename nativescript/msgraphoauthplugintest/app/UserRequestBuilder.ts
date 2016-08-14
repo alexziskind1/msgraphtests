@@ -4,8 +4,9 @@ import {DriveRequestBuilder} from './DriveRequestBuilder';
 import {Option} from './Option';
 import {IUserRequest} from './IUserRequest';
 import {UserRequest} from './UserRequest';
+import {IUserRequestBuilder} from './IUserRequestBuilder';
 
-export class UserRequestBuilder extends DirectoryObjectRequestBuilder implements Microsoft.Graph.UserRequestBuilder {
+export class UserRequestBuilder extends DirectoryObjectRequestBuilder implements IUserRequestBuilder {
     Calendar: Microsoft.Graph.ICalendarRequestBuilder;
     CalendarGroups: Microsoft.Graph.IUserCalendarGroupsCollectionRequestBuilder;
     Calendars: Microsoft.Graph.IUserCalendarsCollectionRequestBuilder;
