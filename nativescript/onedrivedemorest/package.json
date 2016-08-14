@@ -6,13 +6,13 @@
 	"nativescript": {
 		"id": "org.nativescript.onedrivedemorest",
 		"tns-ios": {
-			"version": "2.1.1"
+			"version": "2.2.0"
 		}
 	},
 	"dependencies": {
 		"msgraph": "file:../plugins/msgraph",
 		"nativescript-pulltorefresh": "^1.1.4",
-		"tns-core-modules": "2.1.0"
+		"tns-core-modules": "2.2.0"
 	},
 	"devDependencies": {
 		"nativescript-dev-typescript": "^0.3.2",

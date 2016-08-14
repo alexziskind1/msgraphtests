@@ -3,7 +3,7 @@ export const GRAPH_RESOURCE : string = "https://graph.microsoft.com/";
 //export const CLIENT_ID : string = "bcbd9351-aca3-45cd-a27f-1bce4262e302";
 //export const REDIRECT = "urn:ietf:wg:oauth:2.0:oob";
 
-export const CLIENT_ID : string = "52e97c5d-113d-4447-8d28-4890855ea8f2";
+export const CLIENT_ID : string = "d07edd43-95dd-4cd3-bcab-75cbbc1c7431";
 export const REDIRECT = "urn:ietf:wg:oauth:2.0:oob";
 
 export const SCOPES = [ "https://graph.microsoft.com/User.Read",
