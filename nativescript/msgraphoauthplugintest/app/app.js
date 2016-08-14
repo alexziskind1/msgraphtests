@@ -1,10 +1,13 @@
 "use strict";
-var application = require("application");
+var applicationModule = require("application");
 var tnsOAuthModule = require('nativescript-oauth');
+var navigationModule = require('./shared/navigation');
+var constantsModule = require('./shared/constants');
 var o365InitOptions = {
-    clientId: 'd07edd43-95dd-4cd3-bcab-75cbbc1c7431',
-    scope: ['Files.ReadWrite', 'User.ReadWrite', 'offline_access'] //whatever other scopes you need 
+    clientId: constantsModule.CLIENT_ID,
+    scope: constantsModule.ACTIVE_SCOPES //whatever other scopes you need 
 };
 tnsOAuthModule.initOffice365(o365InitOptions);
-application.start({ moduleName: "main-page" });
+applicationModule.mainModule = navigationModule.loginPage();
+applicationModule.start();
 //# sourceMappingURL=app.js.map

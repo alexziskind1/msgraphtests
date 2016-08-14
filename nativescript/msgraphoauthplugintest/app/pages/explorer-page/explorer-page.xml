@@ -1,0 +1,39 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+        xmlns:PullRefresh="nativescript-pulltorefresh"
+        loaded="onLoaded" unloaded="onUnloaded" navigatingTo="onNavigatingTo" navigatedTo="onNavigatedTo">
+
+    <Page.actionBar>
+        <ActionBar>
+            <ActionItem tap="onActionTap"
+                ios.systemIcon="9" ios.position="right" text="Action" />
+        </ActionBar>
+    </Page.actionBar>
+
+    <StackLayout class="explorer-wrapper">
+        <PullRefresh:PullToRefresh refresh="refreshList">
+            <ScrollView class="items-scrollview">
+                <Repeater id="itemsRepeater" class="items-repeater" items="{{ children }}">
+                    <Repeater.itemsLayout>
+                        <WrapLayout class="items-layout" />
+                    </Repeater.itemsLayout>
+                    <Repeater.itemTemplate>
+                        <StackLayout class="drive-item-wrapper" tap="driveItemTap">
+                            <AbsoluteLayout class="icon-image-wrapper">
+                                <Image id="imgFav" cssClass="icon-image" stretch="aspectFit"
+                                    src="{{ isFolder ? 'res://folder_icon_blue' : 'res://file_icon_blank' }}" />
+                                <Image cssClass="drive-select-icon" stretch="aspectFit"
+                                    src="{{ isSelected ? 'res://ios_checkbox_on' : 'res://ios_checkbox_off' }}"
+                                    visibility="{{ par.inSelectMode ? 'visible' : 'collapsed' }}"  />
+
+                            </AbsoluteLayout>
+                            <Label class="drive-item-name" text="{{ name }}" />
+                            <Label class="drive-item-info" text="{{ info }}" />
+                        </StackLayout>
+                    </Repeater.itemTemplate>
+                </Repeater>
+            </ScrollView>
+        </PullRefresh:PullToRefresh>
+
+        <Label text="no items" class="no-items" visibility="{{ childCount === 0 ? 'visible' : 'collapsed' }}" />
+    </StackLayout>
+</Page>
