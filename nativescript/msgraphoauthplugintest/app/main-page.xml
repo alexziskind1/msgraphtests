@@ -1,0 +1,7 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
+  <StackLayout>
+
+    <Button text="Login" tap="{{ onTapLogin }}" />
+    <Button text="Get data" tap="{{ onTapGetData }}" />
+  </StackLayout>
+</Page>
