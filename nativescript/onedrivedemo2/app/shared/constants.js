@@ -1,7 +1,7 @@
 "use strict";
 exports.AUTHORITY = "https://login.microsoftonline.com/common";
 exports.GRAPH_RESOURCE = "https://graph.microsoft.com/";
-exports.CLIENT_ID = "bcbd9351-aca3-45cd-a27f-1bce4262e302";
+exports.CLIENT_ID = "d07edd43-95dd-4cd3-bcab-75cbbc1c7431";
 exports.REDIRECT = "urn:ietf:wg:oauth:2.0:oob";
 exports.SCOPES = ["https://graph.microsoft.com/User.Read",
     "https://graph.microsoft.com/User.ReadWrite",
