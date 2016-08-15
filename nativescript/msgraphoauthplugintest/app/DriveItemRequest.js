@@ -24,10 +24,10 @@ var DriveItemRequest = (function (_super) {
     DriveItemRequest.prototype.Get = function (cancellationToken) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.Send(null)
+            _this.SendGen(null)
                 .then(function (result) {
-                //this.InitializeCollectionProperties(retrievedEntity);
-                resolve();
+                _this.InitializeCollectionProperties(result);
+                resolve(result);
             })
                 .catch(function () {
                 reject();
@@ -54,8 +54,13 @@ var DriveItemRequest = (function (_super) {
         this.QueryOptions.push(new QueryOption_1.QueryOption("$select", value));
         return this;
     };
-    DriveItemRequest.prototype.InitializeCollectionProperties = function (driveItemToInitialize) {
-        //TODO
+    DriveItemRequest.prototype.InitializeCollectionProperties = function (di) {
+        di.Children = di.children;
+        di.Id = di.id;
+        di.Name = di.name;
+        di.Folder = di.folder;
+        di.Size = di.size;
+        di.WebUrl = di.weburl;
     };
     return DriveItemRequest;
 }(BaseRequest_1.BaseRequest));

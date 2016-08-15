@@ -6,6 +6,7 @@ import { Repeater } from 'ui/repeater';
 import * as folderData from '../../shared/folder-data';
 import * as navigationModule from '../../shared/navigation';
 import * as dialogModule from "ui/dialogs";
+import * as tnsOAuthModule from 'nativescript-oauth';
 
 //import * as msGraphModule from '../../shared/ms-graph';
 
@@ -48,6 +49,7 @@ export function onActionTap(args: EventData) {
         console.log("Dialog result: " + result)
         switch(result) {
             case 'Logout':
+                tnsOAuthModule.logout(navigationModule.loginPage());
                 /*
                 msGraphModule.logout()
                     .then(()=>{

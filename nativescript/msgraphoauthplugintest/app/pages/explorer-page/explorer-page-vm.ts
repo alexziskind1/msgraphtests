@@ -9,10 +9,11 @@ import * as httpModule from 'http';
 import * as navigationModule from '../../shared/navigation';
 import * as constantsModule from '../../shared/constants';
 //import { invokeOnRunLoop } from '../../shared/async-helper';
+import {ExplorerPageDriveItem} from '../../ExplorerPageDriveItem';
 
+var a = 3;
 
-
-export class ExplorerPageViewModel extends Observable implements Microsoft.Graph.DriveItem {
+export class ExplorerPageViewModel extends ExplorerPageDriveItem {
     private _id: string;
     private _entityId: string;
     private _name: string;
@@ -57,7 +58,7 @@ export class ExplorerPageViewModel extends Observable implements Microsoft.Graph
         }
     }
 
-    //
+    /*
 		Audio: Microsoft.Graph.Audio;
 		Children: Microsoft.Graph.DriveItem[];
 		Content: System.IO.Stream;
@@ -95,12 +96,12 @@ export class ExplorerPageViewModel extends Observable implements Microsoft.Graph
         AdditionalData: System.Collections.Generic.KeyValuePair<string, any>[];
         Id: string;
         ODataType: string;
-    //
+    */
 
 
-    constructor(item: Microsoft.Graph.DriveItem, par: Microsoft.Graph.DriveItem);
-    constructor(entityId: string, par: Microsoft.Graph.DriveItem);
-    constructor(obj: string | Microsoft.Graph.DriveItem, par: Microsoft.Graph.DriveItem);
+    constructor(item: ExplorerPageDriveItem, par: ExplorerPageDriveItem);
+    constructor(entityId: string, par: ExplorerPageDriveItem);
+    constructor(obj: string | ExplorerPageDriveItem, par: ExplorerPageDriveItem);
     constructor(obj?: any, par?: any) {
         super();
         
@@ -232,13 +233,25 @@ export class ExplorerPageViewModel extends Observable implements Microsoft.Graph
     }
 
     public loadChildren() : Promise<any> {
-        var driveRoot = this._msGraphClient.Me.Drive.Items;
-
-        return this._msGraphClient.Me.Drive.Request().Get();
+        return new Promise((resolve, reject)=>{
+            var expandStr = "children";
+            var itemId = this.entityId ? this.entityId : 'root';
+            this._msGraphClient.Me.Drive.Items.Item(itemId).Request().Expand(expandStr).Get()
+                .then((result: ExplorerPageDriveItem)=>{
+                    this.onLoadedChildren(result.Children);
+                    resolve();
+                })
+                .catch((er)=>{
+                    this.showErrorAlert(er);
+                    this.onLoadedChildren(null);
+                    reject(er);
+                });
+        });
     }
 
 
     private showErrorAlert(error) {
-        alert(error);
+        console.error("error");
+        console.dir(error);
     }
 }

@@ -64,6 +64,19 @@ export class BaseRequest implements IBaseRequest {
             return this.SendRequest(serializableObject, cancellationToken);
         }
 
+        public SendGen<T>(serializableObject:any,cancellationToken?: CancellationToken) : Promise<T> {
+            return new Promise<T>((resolve, reject)=>{
+                this.SendRequest(serializableObject, cancellationToken)
+                    .then((response: http.HttpResponse)=>{
+                        let resObj = this.Client.HttpProvider.Serializer.DeserializeObject<T>(response.content.toString());
+                        resolve(resObj);
+                    })
+                    .catch((er)=>{
+                        reject(er);
+                    });
+            });
+        }
+
         /// <summary>
         /// Sends the request.
         /// </summary>
@@ -293,6 +306,21 @@ export class BaseRequest implements IBaseRequest {
 
             return parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname;
             //return new UriBuilder(uri) { Query = string.Empty }.ToString();
+        }
+
+        public PropNamesToPascalCase(obj: any) {
+            for (var property in obj) {
+                obj[property.toUpperCase()] = this.GetPropertyValue.call(obj, property);
+                delete obj[property];
+            }
+        }
+
+        public GetPropertyValue(propName: string) : any {
+            if (typeof this[propName] === 'undefined') {
+                return null;
+            } else {
+                return this[propName];
+            }
         }
 }
     

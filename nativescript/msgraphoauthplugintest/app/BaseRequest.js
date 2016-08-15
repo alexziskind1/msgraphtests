@@ -36,6 +36,19 @@ var BaseRequest = (function () {
     BaseRequest.prototype.Send = function (serializableObject, cancellationToken) {
         return this.SendRequest(serializableObject, cancellationToken);
     };
+    BaseRequest.prototype.SendGen = function (serializableObject, cancellationToken) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.SendRequest(serializableObject, cancellationToken)
+                .then(function (response) {
+                var resObj = _this.Client.HttpProvider.Serializer.DeserializeObject(response.content.toString());
+                resolve(resObj);
+            })
+                .catch(function (er) {
+                reject(er);
+            });
+        });
+    };
     /// <summary>
     /// Sends the request.
     /// </summary>
@@ -214,6 +227,20 @@ var BaseRequest = (function () {
         }
         return parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname;
         //return new UriBuilder(uri) { Query = string.Empty }.ToString();
+    };
+    BaseRequest.prototype.PropNamesToPascalCase = function (obj) {
+        for (var property in obj) {
+            obj[property.toUpperCase()] = this.GetPropertyValue.call(obj, property);
+            delete obj[property];
+        }
+    };
+    BaseRequest.prototype.GetPropertyValue = function (propName) {
+        if (typeof this[propName] === 'undefined') {
+            return null;
+        }
+        else {
+            return this[propName];
+        }
     };
     return BaseRequest;
 }());

@@ -34,10 +34,10 @@ export class DriveItemRequest extends BaseRequest implements IDriveItemRequest {
 
     public Get(cancellationToken?:CancellationToken) : Promise<Microsoft.Graph.DriveItem> {
         return new Promise<Microsoft.Graph.DriveItem>((resolve, reject)=>{
-            this.Send(null)
-                .then((result: http.HttpResponse)=>{
-                    //this.InitializeCollectionProperties(retrievedEntity);
-                    resolve();
+            this.SendGen<Microsoft.Graph.DriveItem>(null)
+                .then((result: Microsoft.Graph.DriveItem)=>{
+                    this.InitializeCollectionProperties(result);
+                    resolve(result);
                 })
                 .catch(()=>{
                     reject();
@@ -71,7 +71,14 @@ export class DriveItemRequest extends BaseRequest implements IDriveItemRequest {
         return this;
     }
 
-    private InitializeCollectionProperties(driveItemToInitialize: Microsoft.Graph.DriveItem) {
-        //TODO
+    private InitializeCollectionProperties(di: Microsoft.Graph.DriveItem) {
+        di.Children = (<any>di).children;
+        di.Id = (<any>di).id;
+        di.Name = (<any>di).name;
+        di.Folder = (<any>di).folder;
+        di.Size = (<any>di).size;
+        di.WebUrl = (<any>di).weburl;
     }
+
+    
 }

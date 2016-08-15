@@ -9,7 +9,16 @@ var Serializer = (function () {
     /// <param name="inputString">The JSON string to deserialize.</param>
     /// <returns>The deserialized object.</returns>
     Serializer.prototype.DeserializeObject = function (inputString) {
-        return {};
+        if (!inputString) {
+            return {};
+        }
+        var parsed = JSON.parse(inputString);
+        if (parsed.convertPropNames && typeof parsed.convertPropNames == 'function') {
+            var parsedT = parsed;
+            var parsedConverted = (parsedT.convertPropNames(parsedT));
+            return parsedConverted;
+        }
+        return parsed;
     };
     /// <summary>
     /// Serializes the specified object into a JSON string.
@@ -17,7 +26,10 @@ var Serializer = (function () {
     /// <param name="serializeableObject">The object to serialize.</param>
     /// <returns>The JSON string.</returns>
     Serializer.prototype.SerializeObject = function (serializeableObject) {
-        return '';
+        if (!serializeableObject) {
+            return null;
+        }
+        return JSON.stringify(serializeableObject);
     };
     return Serializer;
 }());

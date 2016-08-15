@@ -12,4 +12,5 @@ var o365InitOptions : TnsOAuth.ITnsOAuthOptionsOffice365 = {
 tnsOAuthModule.initOffice365(o365InitOptions);
 
 applicationModule.mainModule = navigationModule.loginPage();
+//applicationModule.mainModule = 'main-page';
 applicationModule.start();

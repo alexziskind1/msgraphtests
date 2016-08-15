@@ -1,6 +1,7 @@
 "use strict";
 var EntityRequestBuilder_1 = require('./EntityRequestBuilder');
 var DriveItemRequestBuilder_1 = require('./DriveItemRequestBuilder');
+var DriveItemsCollectionRequestBuilder_1 = require('./DriveItemsCollectionRequestBuilder');
 var DriveRequestBuilder = (function (_super) {
     __extends(DriveRequestBuilder, _super);
     function DriveRequestBuilder(requestUrl, client) {
@@ -13,6 +14,13 @@ var DriveRequestBuilder = (function (_super) {
         /// <returns>The <see cref="IDriveItemRequestBuilder"/>.</returns>
         get: function () {
             return new DriveItemRequestBuilder_1.DriveItemRequestBuilder(this.AppendSegmentToRequestUrl("root"), this.Client);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DriveRequestBuilder.prototype, "Items", {
+        get: function () {
+            return new DriveItemsCollectionRequestBuilder_1.DriveItemsCollectionRequestBuilder(this.AppendSegmentToRequestUrl("items"), this.Client);
         },
         enumerable: true,
         configurable: true

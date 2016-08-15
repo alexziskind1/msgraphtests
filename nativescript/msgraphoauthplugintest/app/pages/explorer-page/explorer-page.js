@@ -2,6 +2,7 @@
 var folderData = require('../../shared/folder-data');
 var navigationModule = require('../../shared/navigation');
 var dialogModule = require("ui/dialogs");
+var tnsOAuthModule = require('nativescript-oauth');
 //import * as msGraphModule from '../../shared/ms-graph';
 var vm;
 var page;
@@ -39,6 +40,7 @@ function onActionTap(args) {
         console.log("Dialog result: " + result);
         switch (result) {
             case 'Logout':
+                tnsOAuthModule.logout(navigationModule.loginPage());
                 /*
                 msGraphModule.logout()
                     .then(()=>{

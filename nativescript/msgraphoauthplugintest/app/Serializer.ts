@@ -10,7 +10,19 @@ export class Serializer implements ISerializer {
         /// <param name="inputString">The JSON string to deserialize.</param>
         /// <returns>The deserialized object.</returns>
         public DeserializeObject<T>(inputString: string): T {
-            return <T>{};
+            if (!inputString) {
+                return <T>{};
+            }
+            
+            let parsed = <T>JSON.parse(inputString);
+            
+            if ((<any>parsed).convertPropNames && typeof (<any>parsed).convertPropNames == 'function') {
+                let parsedT = <T>parsed;
+                let parsedConverted = <T>((<any>parsedT).convertPropNames(parsedT));
+                return parsedConverted;
+            }
+
+            return parsed;
         }
 
         /// <summary>
@@ -19,7 +31,10 @@ export class Serializer implements ISerializer {
         /// <param name="serializeableObject">The object to serialize.</param>
         /// <returns>The JSON string.</returns>
         public SerializeObject(serializeableObject: any) : string {
-            return '';
+            if (!serializeableObject) {
+                return null;
+            }
+            return JSON.stringify(serializeableObject);
         }
 
 }

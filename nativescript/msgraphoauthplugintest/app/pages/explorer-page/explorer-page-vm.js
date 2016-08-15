@@ -1,8 +1,9 @@
 "use strict";
-var observable_1 = require("data/observable");
 var observable_array_1 = require('data/observable-array');
 var SDKHelper_1 = require('../../SDKHelper');
 //import { invokeOnRunLoop } from '../../shared/async-helper';
+var ExplorerPageDriveItem_1 = require('../../ExplorerPageDriveItem');
+var a = 3;
 var ExplorerPageViewModel = (function (_super) {
     __extends(ExplorerPageViewModel, _super);
     function ExplorerPageViewModel(obj, par) {
@@ -176,13 +177,27 @@ var ExplorerPageViewModel = (function (_super) {
         }
     };
     ExplorerPageViewModel.prototype.loadChildren = function () {
-        var driveRoot = this._msGraphClient.Me.Drive.Items;
-        return this._msGraphClient.Me.Drive.Request().Get();
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var expandStr = "children";
+            var itemId = _this.entityId ? _this.entityId : 'root';
+            _this._msGraphClient.Me.Drive.Items.Item(itemId).Request().Expand(expandStr).Get()
+                .then(function (result) {
+                _this.onLoadedChildren(result.Children);
+                resolve();
+            })
+                .catch(function (er) {
+                _this.showErrorAlert(er);
+                _this.onLoadedChildren(null);
+                reject(er);
+            });
+        });
     };
     ExplorerPageViewModel.prototype.showErrorAlert = function (error) {
-        alert(error);
+        console.error("error");
+        console.dir(error);
     };
     return ExplorerPageViewModel;
-}(observable_1.Observable));
+}(ExplorerPageDriveItem_1.ExplorerPageDriveItem));
 exports.ExplorerPageViewModel = ExplorerPageViewModel;
 //# sourceMappingURL=explorer-page-vm.js.map

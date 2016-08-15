@@ -412,7 +412,7 @@ declare module Microsoft.Graph {
 		Thumbnails: Microsoft.Graph.IDriveItemThumbnailsCollectionRequestBuilder;
 	}
 	interface IDriveItemsCollectionRequestBuilder {
-		Item: Microsoft.Graph.IDriveItemRequestBuilder;
+		//Item: Microsoft.Graph.IDriveItemRequestBuilder;
 	}
 	interface IDriveItemThumbnailsCollectionRequestBuilder {
 		Item: Microsoft.Graph.IThumbnailSetRequestBuilder;

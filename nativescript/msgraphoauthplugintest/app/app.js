@@ -9,5 +9,6 @@ var o365InitOptions = {
 };
 tnsOAuthModule.initOffice365(o365InitOptions);
 applicationModule.mainModule = navigationModule.loginPage();
+//applicationModule.mainModule = 'main-page';
 applicationModule.start();
 //# sourceMappingURL=app.js.map
