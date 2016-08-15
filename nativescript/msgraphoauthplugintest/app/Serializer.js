@@ -13,11 +13,6 @@ var Serializer = (function () {
             return {};
         }
         var parsed = JSON.parse(inputString);
-        if (parsed.convertPropNames && typeof parsed.convertPropNames == 'function') {
-            var parsedT = parsed;
-            var parsedConverted = (parsedT.convertPropNames(parsedT));
-            return parsedConverted;
-        }
         return parsed;
     };
     /// <summary>

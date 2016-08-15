@@ -41,16 +41,6 @@ function onActionTap(args) {
         switch (result) {
             case 'Logout':
                 tnsOAuthModule.logout(navigationModule.loginPage());
-                /*
-                msGraphModule.logout()
-                    .then(()=>{
-                        navigationModule.goToLoginPage(true);
-                    })
-                    .catch((er)=>{
-                        console.log('failed to logout: ' + er);
-                        navigationModule.goToLoginPage(true);
-                    });
-                    */
                 break;
             case 'Delete':
                 var options = {

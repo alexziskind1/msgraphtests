@@ -15,12 +15,6 @@ export class Serializer implements ISerializer {
             }
             
             let parsed = <T>JSON.parse(inputString);
-            
-            if ((<any>parsed).convertPropNames && typeof (<any>parsed).convertPropNames == 'function') {
-                let parsedT = <T>parsed;
-                let parsedConverted = <T>((<any>parsedT).convertPropNames(parsedT));
-                return parsedConverted;
-            }
 
             return parsed;
         }
