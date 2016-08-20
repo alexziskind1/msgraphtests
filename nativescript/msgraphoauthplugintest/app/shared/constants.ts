@@ -1,4 +1,4 @@
-export const CLIENT_ID : string = "d07edd43-95dd-4cd3-bcab-75cbbc1c7431";
+export const CLIENT_ID : string = "67e1c318-a133-432f-a53b-5122ceab4c08";
 
 export const SCOPES = [ "User.Read",
                 "User.ReadWrite",

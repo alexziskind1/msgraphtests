@@ -24,8 +24,9 @@ var SDKHelper = (function () {
         }), new HttpProvider_1.HttpProvider(), baseUrl);
         return graphClient;
     };
-    SDKHelper.SignOutClient = function () {
+    SDKHelper.SignOutClient = function (returnPage) {
         this.graphClient = null;
+        tnsOAuthModule.logout(returnPage);
     };
     SDKHelper.graphClient = null;
     return SDKHelper;

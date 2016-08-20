@@ -396,7 +396,7 @@ declare module Microsoft.Graph {
 	interface IDirectoryRoleTemplateRequestBuilder {
 	}
 	interface IDriveItemChildrenCollectionRequestBuilder {
-		Item: Microsoft.Graph.IDriveItemRequestBuilder;
+		//Item: Microsoft.Graph.IDriveItemRequestBuilder;
 	}
 	interface IDriveItemContentRequestBuilder {
 	}

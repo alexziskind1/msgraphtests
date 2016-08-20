@@ -17,7 +17,7 @@ export interface IDriveItemRequest extends IBaseRequest {
         /// </summary>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> for the request.</param>
         /// <returns>The task to await.</returns>
-        Delete(cancellationToken?:CancellationToken);
+        Delete(cancellationToken?:CancellationToken) : Promise<void>;
 
 
 

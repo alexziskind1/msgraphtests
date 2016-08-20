@@ -6,7 +6,8 @@ import { Repeater } from 'ui/repeater';
 import * as folderData from '../../shared/folder-data';
 import * as navigationModule from '../../shared/navigation';
 import * as dialogModule from "ui/dialogs";
-import * as tnsOAuthModule from 'nativescript-oauth';
+//import * as tnsOAuthModule from 'nativescript-oauth';
+import {SDKHelper} from '../../SDKHelper';
 
 //import * as msGraphModule from '../../shared/ms-graph';
 
@@ -49,10 +50,10 @@ export function onActionTap(args: EventData) {
         console.log("Dialog result: " + result)
         switch(result) {
             case 'Logout':
-                tnsOAuthModule.logout(navigationModule.loginPage());
+                SDKHelper.SignOutClient(navigationModule.loginPage());
                 break;
             case 'Delete':
-                var options = {
+                let options = {
                     title: "Deletion",
                     message: "Are you sure you want to delete these items?",
                     okButtonText: "Yes",
@@ -69,6 +70,22 @@ export function onActionTap(args: EventData) {
                 vm.toggleSelectMode();
                 var rep = <Repeater>page.getViewById('itemsRepeater');
                 rep.refresh();
+                break;
+            case 'Create Folder':
+                let createOptions : dialogModule.PromptOptions = {
+                    title: 'Create Folder',
+                    cancelButtonText: 'Cancel',
+                    okButtonText: 'Create',
+                    message: 'Enter new folder name' 
+                }; 
+                dialogModule.prompt(createOptions)
+                    .then((presult: dialogModule.PromptResult)=>{
+                        if (presult.result) {
+                            if (presult.text && presult.text.length > 0) {
+                                vm.createNewFolderWithName(presult.text);
+                            }
+                        }
+                    });
                 break;
         }
     });

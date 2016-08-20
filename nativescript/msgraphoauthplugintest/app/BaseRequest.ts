@@ -177,12 +177,14 @@ export class BaseRequest implements IBaseRequest {
                             {
                                 request.Content = new StringContent(this.Client.HttpProvider.Serializer.SerializeObject(serializableObject));
                             }
-
-                            if (!string.IsNullOrEmpty(this.ContentType))
-                            {
-                                request.Content.Headers.ContentType = new MediaTypeHeaderValue(this.ContentType);
-                            }
                             */
+                            request.content = this.Client.HttpProvider.Serializer.SerializeObject(serializableObject);
+
+                            if (this.ContentType) {
+                                request.headers['Content-Type'] = this.ContentType;// + ';charset=UTF-8';
+                                //request.Content.Headers.ContentType = new MediaTypeHeaderValue(this.ContentType);
+                            }
+                            
                         }
 
                         this.Client.HttpProvider.Send(authenticatedRequest, cancellationToken)

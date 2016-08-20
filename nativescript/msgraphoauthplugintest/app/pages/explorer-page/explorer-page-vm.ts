@@ -1,22 +1,19 @@
 import { Observable, EventData } from "data/observable";
 import { ObservableArray } from 'data/observable-array';
-//import { DriveItem } from '../../shared/interfaces';
 import { StackLayout } from 'ui/layouts/stack-layout';
 import {SDKHelper} from '../../SDKHelper';
 import {GraphServiceClient} from '../../GraphServiceClient';
 import * as httpModule from 'http';
-//import * as msGraphModule from '../../shared/ms-graph';
 import * as navigationModule from '../../shared/navigation';
 import * as constantsModule from '../../shared/constants';
-//import { invokeOnRunLoop } from '../../shared/async-helper';
 import {ExplorerPageDriveItem} from '../../ExplorerPageDriveItem';
-
-var a = 3;
+import * as filesizeModule from 'filesize';
 
 export class ExplorerPageViewModel extends ExplorerPageDriveItem {
     private _id: string;
     private _entityId: string;
     private _name: string;
+    private _size: number;
     private _isFolder: boolean = false;
     private _childCount: number = 0;
     private _par: ExplorerPageViewModel;
@@ -46,7 +43,7 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
     }
     
     public get fileSize() {
-        return '51 KB';
+        return this._size;
     }
 
     public get info() {
@@ -54,50 +51,9 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
             return this._childCount + ' items';
         }
         else {
-            return this.fileSize;
+            return filesizeModule(this.fileSize);
         }
     }
-
-    /*
-		Audio: Microsoft.Graph.Audio;
-		Children: Microsoft.Graph.DriveItem[];
-		Content: System.IO.Stream;
-		CreatedBy: Microsoft.Graph.IdentitySet;
-		CreatedByUser: Microsoft.Graph.User;
-		CreatedDateTime: Microsoft.Graph.Date;
-		CTag: string;
-		Deleted: Microsoft.Graph.Deleted;
-		Description: string;
-		ETag: string;
-		File: Microsoft.Graph.File;
-		FileSystemInfo: Microsoft.Graph.FileSystemInfo;
-		Folder: Microsoft.Graph.Folder;
-		Image: Microsoft.Graph.Image;
-		LastModifiedBy: Microsoft.Graph.IdentitySet;
-		LastModifiedByUser: Microsoft.Graph.User;
-		LastModifiedDateTime: Microsoft.Graph.Date;
-		Location: Microsoft.Graph.GeoCoordinates;
-		Name: string;
-		Package: Microsoft.Graph.Package;
-		ParentReference: Microsoft.Graph.ItemReference;
-		Permissions: Microsoft.Graph.Permission[];
-		Photo: Microsoft.Graph.Photo;
-		RemoteItem: Microsoft.Graph.RemoteItem;
-		SearchResult: Microsoft.Graph.SearchResult;
-		Shared: Microsoft.Graph.Shared;
-		Size: number;
-		SpecialFolder: Microsoft.Graph.SpecialFolder;
-		Thumbnails: Microsoft.Graph.ThumbnailSet[];
-		Video: Microsoft.Graph.Video;
-		WebDavUrl: string;
-		WebUrl: string;
-
-        //
-        AdditionalData: System.Collections.Generic.KeyValuePair<string, any>[];
-        Id: string;
-        ODataType: string;
-    */
-
 
     constructor(item: ExplorerPageDriveItem, par: ExplorerPageDriveItem);
     constructor(entityId: string, par: ExplorerPageDriveItem);
@@ -111,6 +67,7 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
             this._id = obj && obj.id || '';
             this._entityId = obj && obj.entityId || obj.id || 'root';
             this._name = obj && obj.name || '';
+            this._size = obj.size;
             if (obj && obj.folder) {
                 this._isFolder = true;
                 this.set('childCount', obj.folder.childCount);
@@ -165,52 +122,56 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
         return false;
     }
 
-    public deleteSelectedItems() {
+    public deleteSelectedItems() : Promise<void> {
         var selArr = this.selectedChildren();
 
-        /*
-            return msGraphModule.login()
-                .then(()=>{
-                    return new Promise<void>((resolve, reject)=>{
-                        if (msGraphModule.accessTokenExpired()) {
-                            var er = 'access token expired';
-                            this.showErrorAlert(er);
-                            reject(er);
-                        } else {
-                            var promises = [];
+        return new Promise<void>((resolve, reject)=>{
+            let msGraphClient = SDKHelper.GetAuthenticatedClient();
+            var promises = [];
 
-                            for (var i = 0; i < selArr.length; i++) {
-                                var req : httpModule.HttpRequestOptions = {
-                                    url: constantsModule.GRAPH_RESOURCE + 'v1.0/me/drive/items/'+selArr[i].id,
-                                    method: "DELETE",
-                                    headers: {
-                                        Authorization: "Bearer " + msGraphModule.accessToken
-                                    }
-                                };
+            for (var i = 0; i < selArr.length; i++) {
+                promises.push(msGraphClient.Me.Drive.Items.Item(selArr[i].id).Request().Delete());
+            }
 
-                                var httpP = httpModule.request(req)
-                                    .then((response: any)=>{
-
-                                    })
-                                    .catch((error)=>{
-                                        this.showErrorAlert(error);
-                                        reject(error);
-                                    });
-
-                                promises.push(httpP);
-                            }
-
-                            Promise.all(promises)
+            Promise.all(promises)
                             .then(()=>{
-                                this.loadChildren().then(()=>{resolve()});
+                                this.loadChildren()
+                                    .then(()=>{
+                                        resolve();
+                                    });
                                 this.toggleSelectMode();
+                            })
+                            .catch((er)=>{
+                                console.error(er);
+                                reject(er);
                             });
 
-                        }
-                    });
-                });
-                */
+        });
+    }
 
+    public createNewFolderWithName(folderName: string) {
+        return new Promise<void>((resolve, reject)=>{
+            let msGraphClient = SDKHelper.GetAuthenticatedClient();
+
+            let newDriveItem = {
+                name: folderName,
+                folder: {},
+                "@name.conflictBehavior": "rename"
+            };
+
+            msGraphClient.Me.Drive.Items.Item(this.entityId).Children.Request().Add(<any>newDriveItem)
+                .then((result: ExplorerPageDriveItem)=>{
+                    console.dir(result);
+                    var childVm = new ExplorerPageViewModel(result, this);
+                    this.children.push(childVm);
+                    //this.children.push(result);
+                })
+                .catch((er)=>{
+                    console.error('error');
+                    console.dir(er);
+                });
+
+        });
     }
 
     private onLoadedChildren(items) {

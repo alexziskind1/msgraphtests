@@ -7,30 +7,43 @@ var DriveItemRequest = (function (_super) {
         _super.call(this, requestUrl, client, options);
     }
     DriveItemRequest.prototype.Create = function (driveItemToCreate, cancellationToken) {
-        return new Promise(function (resolve, reject) {
-            //TODO convert this
-            /*
-        this.ContentType = "application/json";
-        this.Method = "PUT";
-        var newEntity = <Microsoft.Graph.DriveItem>this.Send(driveItemToCreate, cancellationToken);
-        this.InitializeCollectionProperties(newEntity);
-        return newEntity;
-            */
-        });
-    };
-    DriveItemRequest.prototype.Delete = function (cancellationToken) {
-        //TODO:
-    };
-    DriveItemRequest.prototype.Get = function (cancellationToken) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            _this.SendGen(null)
+            _this.ContentType = "application/json";
+            _this.Method = "PUT";
+            _this.SendGen(driveItemToCreate, cancellationToken)
                 .then(function (result) {
                 _this.InitializeCollectionProperties(result);
                 resolve(result);
             })
-                .catch(function () {
-                reject();
+                .catch(function (er) {
+                reject(er);
+            });
+        });
+    };
+    DriveItemRequest.prototype.Delete = function (cancellationToken) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.Method = "DELETE";
+            _this.SendGen(null, cancellationToken)
+                .then(function () {
+                resolve();
+            })
+                .catch(function (er) {
+                reject(er);
+            });
+        });
+    };
+    DriveItemRequest.prototype.Get = function (cancellationToken) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.SendGen(null, cancellationToken)
+                .then(function (result) {
+                _this.InitializeCollectionProperties(result);
+                resolve(result);
+            })
+                .catch(function (er) {
+                reject(er);
             });
         });
     };

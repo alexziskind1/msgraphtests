@@ -17,30 +17,41 @@ export class DriveItemRequest extends BaseRequest implements IDriveItemRequest {
 
     public Create(driveItemToCreate: Microsoft.Graph.DriveItem,  cancellationToken?:CancellationToken) : Promise<Microsoft.Graph.DriveItem> {
         return new Promise<Microsoft.Graph.DriveItem>((resolve, reject)=>{
-            //TODO convert this
-            /*
-        this.ContentType = "application/json";
-        this.Method = "PUT";
-        var newEntity = <Microsoft.Graph.DriveItem>this.Send(driveItemToCreate, cancellationToken);
-        this.InitializeCollectionProperties(newEntity);
-        return newEntity;
-            */
-        });
-    }
-
-    public Delete(cancellationToken?:CancellationToken) {
-        //TODO:
-    }
-
-    public Get(cancellationToken?:CancellationToken) : Promise<Microsoft.Graph.DriveItem> {
-        return new Promise<Microsoft.Graph.DriveItem>((resolve, reject)=>{
-            this.SendGen<Microsoft.Graph.DriveItem>(null)
+            this.ContentType = "application/json";
+            this.Method = "PUT";
+            this.SendGen<Microsoft.Graph.DriveItem>(driveItemToCreate, cancellationToken)
                 .then((result: Microsoft.Graph.DriveItem)=>{
                     this.InitializeCollectionProperties(result);
                     resolve(result);
                 })
-                .catch(()=>{
-                    reject();
+                .catch((er)=>{
+                    reject(er);
+                });
+        });
+    }
+
+    public Delete(cancellationToken?:CancellationToken) : Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            this.Method = "DELETE";
+            this.SendGen<Microsoft.Graph.DriveItem>(null, cancellationToken)
+                .then(()=>{
+                    resolve();
+                })
+                .catch((er)=>{
+                    reject(er);
+                });
+        });
+    }
+
+    public Get(cancellationToken?:CancellationToken) : Promise<Microsoft.Graph.DriveItem> {
+        return new Promise<Microsoft.Graph.DriveItem>((resolve, reject)=>{
+            this.SendGen<Microsoft.Graph.DriveItem>(null, cancellationToken)
+                .then((result: Microsoft.Graph.DriveItem)=>{
+                    this.InitializeCollectionProperties(result);
+                    resolve(result);
+                })
+                .catch((er)=>{
+                    reject(er);
                 });
         });
 

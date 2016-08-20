@@ -1,5 +1,5 @@
 "use strict";
-exports.CLIENT_ID = "d07edd43-95dd-4cd3-bcab-75cbbc1c7431";
+exports.CLIENT_ID = "67e1c318-a133-432f-a53b-5122ceab4c08";
 exports.SCOPES = ["User.Read",
     "User.ReadWrite",
     "User.ReadBasic.All",

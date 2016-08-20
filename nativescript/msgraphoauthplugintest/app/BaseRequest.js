@@ -132,6 +132,22 @@ var BaseRequest = (function () {
             _this.AuthenticateRequest(request)
                 .then(function (authenticatedRequest) {
                 if (serializableObject) {
+                    /*
+                    var inputStream = serializableObject as Stream;
+
+                    if (inputStream != null)
+                    {
+                        request.Content = new StreamContent(inputStream);
+                    }
+                    else
+                    {
+                        request.Content = new StringContent(this.Client.HttpProvider.Serializer.SerializeObject(serializableObject));
+                    }
+                    */
+                    request.content = _this.Client.HttpProvider.Serializer.SerializeObject(serializableObject);
+                    if (_this.ContentType) {
+                        request.headers['Content-Type'] = _this.ContentType; // + ';charset=UTF-8';
+                    }
                 }
                 _this.Client.HttpProvider.Send(authenticatedRequest, cancellationToken)
                     .then(function (response) {

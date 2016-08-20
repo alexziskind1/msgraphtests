@@ -12,8 +12,7 @@ var baseUrl = 'https://graph.microsoft.com/v1.0';
     private static  graphClient : GraphServiceClient = null;
 
     // Get an authenticated Microsoft Graph Service client.
-    public static GetAuthenticatedClient() : GraphServiceClient
-    {
+    public static GetAuthenticatedClient() : GraphServiceClient {
         let graphClient : GraphServiceClient = new GraphServiceClient(
             new DelegateAuthenticationProvider(
                 (requestMessage: http.HttpRequestOptions) => {
@@ -37,7 +36,8 @@ var baseUrl = 'https://graph.microsoft.com/v1.0';
         return graphClient;
     }
 
-    public static SignOutClient() {
+    public static SignOutClient(returnPage: string) {
         this.graphClient = null;
+        tnsOAuthModule.logout(returnPage);
     }
 }
