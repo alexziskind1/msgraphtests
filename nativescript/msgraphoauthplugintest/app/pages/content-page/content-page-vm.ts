@@ -14,7 +14,7 @@ export class ContentPageViewModel extends Observable {
 
     constructor(public explorerModel: ExplorerPageViewModel) {
         super();
-        this.set('imgContentSrc', "https://www.google.com/images/errors/logo_sm_2.png");
+        this.set('imgContentSrc', explorerModel.downloadUrl);
     }
 
     public loadContent() {

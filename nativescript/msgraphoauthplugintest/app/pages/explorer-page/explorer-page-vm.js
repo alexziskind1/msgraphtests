@@ -22,6 +22,7 @@ var ExplorerPageViewModel = (function (_super) {
                 this._childCount = obj.folder.childCount;
             }
             else if (obj && !obj.folder) {
+                this._downloadUrl = obj["@microsoft.graph.downloadUrl"];
             }
         }
         else if (typeof obj === "string") {
@@ -64,6 +65,13 @@ var ExplorerPageViewModel = (function (_super) {
     Object.defineProperty(ExplorerPageViewModel.prototype, "isFolder", {
         get: function () {
             return this._isFolder;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ExplorerPageViewModel.prototype, "downloadUrl", {
+        get: function () {
+            return this._downloadUrl;
         },
         enumerable: true,
         configurable: true

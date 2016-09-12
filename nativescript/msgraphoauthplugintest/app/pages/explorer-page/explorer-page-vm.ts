@@ -15,6 +15,7 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
     private _name: string;
     private _size: number;
     private _isFolder: boolean = false;
+    private _downloadUrl: string;
     private _childCount: number = 0;
     private _par: ExplorerPageViewModel;
 
@@ -40,6 +41,10 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
     
     public get isFolder() {
         return this._isFolder;
+    }
+
+    public get downloadUrl() {
+        return this._downloadUrl;
     }
     
     public get fileSize() {
@@ -68,11 +73,13 @@ export class ExplorerPageViewModel extends ExplorerPageDriveItem {
             this._entityId = obj && obj.entityId || obj.id || 'root';
             this._name = obj && obj.name || '';
             this._size = obj.size;
+
             if (obj && obj.folder) {
                 this._isFolder = true;
                 this.set('childCount', obj.folder.childCount);
                 this._childCount = obj.folder.childCount;
             } else if (obj && !obj.folder) {
+                this._downloadUrl = obj["@microsoft.graph.downloadUrl"];
             //this.children = obj && obj.children || new ObservableArray();
                 //Not calling loadThumbnails for now because it's been turned off on the Graph API side (7/27/16)
                 //this.loadThumbnail(obj);

@@ -5,7 +5,7 @@ var ContentPageViewModel = (function (_super) {
     function ContentPageViewModel(explorerModel) {
         _super.call(this);
         this.explorerModel = explorerModel;
-        this.set('imgContentSrc', "https://www.google.com/images/errors/logo_sm_2.png");
+        this.set('imgContentSrc', explorerModel.downloadUrl);
     }
     ContentPageViewModel.prototype.loadContent = function () {
         /*
