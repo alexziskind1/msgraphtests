@@ -6,6 +6,8 @@ import {DriveItemRequest} from './DriveItemRequest';
 import {Option} from './Option';
 import {IDriveItemChildrenCollectionRequestBuilder} from './IDriveItemChildrenCollectionRequestBuilder';
 import {DriveItemChildrenCollectionRequestBuilder} from './DriveItemChildrenCollectionRequestBuilder';
+import {IWorkbookRequestBuilder} from './IWorkbookRequestBuilder';
+import {WorkbookRequestBuilder} from './WorkbookRequestBuilder';
 
 export class DriveItemRequestBuilder extends EntityRequestBuilder implements IDriveItemRequestBuilder {
     //Children: IDriveItemChildrenCollectionRequestBuilder;
@@ -22,6 +24,10 @@ export class DriveItemRequestBuilder extends EntityRequestBuilder implements IDr
 
     public get Children() : IDriveItemChildrenCollectionRequestBuilder {
         return new DriveItemChildrenCollectionRequestBuilder(this.AppendSegmentToRequestUrl("children"), this.Client);
+    }
+
+    public get Workbook() : IWorkbookRequestBuilder {
+        return new WorkbookRequestBuilder(this.AppendSegmentToRequestUrl("workbook"), this.Client);
     }
 
     public Request(options?: Option[]) : IDriveItemRequest {    

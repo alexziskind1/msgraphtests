@@ -2,6 +2,7 @@
 var EntityRequestBuilder_1 = require('./EntityRequestBuilder');
 var DriveItemRequest_1 = require('./DriveItemRequest');
 var DriveItemChildrenCollectionRequestBuilder_1 = require('./DriveItemChildrenCollectionRequestBuilder');
+var WorkbookRequestBuilder_1 = require('./WorkbookRequestBuilder');
 var DriveItemRequestBuilder = (function (_super) {
     __extends(DriveItemRequestBuilder, _super);
     function DriveItemRequestBuilder(requestUrl, client) {
@@ -10,6 +11,13 @@ var DriveItemRequestBuilder = (function (_super) {
     Object.defineProperty(DriveItemRequestBuilder.prototype, "Children", {
         get: function () {
             return new DriveItemChildrenCollectionRequestBuilder_1.DriveItemChildrenCollectionRequestBuilder(this.AppendSegmentToRequestUrl("children"), this.Client);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DriveItemRequestBuilder.prototype, "Workbook", {
+        get: function () {
+            return new WorkbookRequestBuilder_1.WorkbookRequestBuilder(this.AppendSegmentToRequestUrl("workbook"), this.Client);
         },
         enumerable: true,
         configurable: true

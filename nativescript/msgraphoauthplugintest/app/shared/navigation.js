@@ -18,6 +18,10 @@ function mePage() {
     return 'pages/me-page/me-page';
 }
 exports.mePage = mePage;
+function excelPage() {
+    return 'pages/excel-page/excel-page';
+}
+exports.excelPage = excelPage;
 function checkAuthGoToPage(clearHistory) {
     if (tnsOAuthModule.accessTokenExpired() && tnsOAuthModule.instance.refreshTokenExpired()) {
         goToLoginPage(clearHistory);

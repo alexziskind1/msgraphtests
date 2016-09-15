@@ -8,7 +8,7 @@ var o365InitOptions = {
     scope: constantsModule.ACTIVE_SCOPES //whatever other scopes you need 
 };
 tnsOAuthModule.initOffice365(o365InitOptions);
-applicationModule.mainModule = navigationModule.loginPage();
+applicationModule.mainModule = navigationModule.excelPage();
 //applicationModule.mainModule = 'main-page';
 applicationModule.start();
 //# sourceMappingURL=app.js.map
