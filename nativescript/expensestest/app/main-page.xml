@@ -1,0 +1,7 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd">
+
+  <StackLayout>
+
+    <Button text="View Expenses" tap="tapViewExpenses" />
+  </StackLayout>
+</Page>

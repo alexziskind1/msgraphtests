@@ -1,0 +1,30 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo">
+
+<Page.actionBar>
+    <ActionBar title="Add Expense">
+      <ActionBar.actionItems>
+         <ActionItem tap="{{ cancelTap }}" ios.position="left" ios.systemIcon="1" android.systemIcon = "ic_menu_cancel" />
+         <ActionItem tap="{{ saveTap }}" ios.position="right" android.position="popup" ios.systemIcon="3" android.systemIcon="ic_menu_save" />
+      </ActionBar.actionItems>
+    </ActionBar>
+  </Page.actionBar>
+
+  <StackLayout>
+        <GridLayout columns="100 *" rows="auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto 50">
+
+        <Label col="0" row="0" text="Merchant" />
+        <TextField col="1" row="0" text="{{ merchant }}" hint="merchant" />
+
+        <Label col="0" row="1" text="Amount" />
+        <TextField col="1" row="1" text="{{ amount }}" hint="amount" />
+
+        <Label col="0" row="5" text="Category" />
+        <ListPicker col="1" row="5" id="picker" class="picker" items="{{ categories }}" selectedIndex="{{ selectedCategoryIndex }}"
+                verticalAlignment="center" horizontalAlignment="center"/>
+
+        <Label col="0" row="6" text="Date" />
+        <DatePicker col="1" row="6" day="{{ selectedDateDay }}" month="{{ selectedDateMonth }}" year="{{ selectedDateYear }}" />
+
+        </GridLayout>
+  </StackLayout>
+</Page>
