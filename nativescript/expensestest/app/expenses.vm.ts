@@ -4,6 +4,7 @@ import frameModule = require('ui/frame');
 
 import { Transaction } from './models';
 import { ItemsService } from './items-service';
+import * as tnsOauthModule from 'nativescript-oauth';
 
 export class ExpensesModel extends observable.Observable {
 
@@ -32,6 +33,10 @@ export class ExpensesModel extends observable.Observable {
             clearHistory: true
         };
         frameModule.topmost().navigate(navEntry);
+    }
+
+    public logoutTap() {
+        tnsOauthModule.logout('main-page');
     }
 
     public selectTransaction() {

@@ -6,17 +6,12 @@ let expensesFileName: string = "Expenses.xlsx";
 
 var driveRootChildrenEndpoint = "https://graph.microsoft.com/v1.0/me/drive/root/children";
 var filesSelectQuery = "?$select=name,id";
+var txFormulaMonth = "=TEXT([DATE], \"mmm - yyyy\")";
+var txFormulaTypeOfDay = "=IF(OR((TEXT([DATE], \"dddd\") = \"Saturday\"), (TEXT([DATE], \"dddd\") = \"Sunday\")), \"Weekend\", \"Weekday\")";
 //
 
 export class ExcelHelper {
-    
-
     public static getTransactions(accessToken: string) : Promise<Array<Transaction>> {
-
-
-
-            
-
             return new Promise((resolve, reject)=>{
 
                 this.getExpensesFileId(accessToken)
@@ -57,14 +52,8 @@ export class ExcelHelper {
                     console.log(er);
                     reject(er);
                 });
-
             });
-
-
         });
-
-        
-
     } 
 
     public static getExpensesFileId(accessToken: string) : Promise<string> {
@@ -94,54 +83,40 @@ export class ExcelHelper {
         });
     }
 
+    public static addTransaction(accessToken: string, t: Transaction) : Promise<Transaction> {
+        return new Promise((resolve, reject)=>{
+            this.getExpensesFileId(accessToken)
+                .then((fileId: string)=>{
+                    let restURLBase = "https://graph.microsoft.com/v1.0/me/drive/items/" + fileId + "/workbook/tables('TransactionsTable')/Rows/";
+                    let values: Array<Array<string|number>> = [[ t.date, t.amount, t.merchant, t.category, txFormulaTypeOfDay, txFormulaMonth ]];
+                    let bodyStr =  JSON.stringify({ index: null, values: values });
+
+                    var req : http.HttpRequestOptions = {
+                        url: restURLBase,
+                        method: "POST",
+                        content: bodyStr,
+                        headers: {
+                            Authorization: "Bearer " + accessToken
+                        }
+                    };
+
+                    return new Promise<string>((resolve, reject)=>{
+                        http.getJSON(req)
+                        .then((txResultResponse)=>{
+                            console.dir(txResultResponse);
+
+                        })
+                        .catch((er)=>{
+                            console.log(er);
+                            reject(er);
+                        });
+                    });
+
+                });
+        });
+    }
 
 
-/*
-        public static async Task<List<Donation>> GetDonations(string accessToken)
-        {
-            List<Donation> donations = new List<Donation>();
 
-            using (var client = new HttpClient())
-            {
-                //client.BaseAddress = new Uri(restURLBase);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                //Find file id
-                var serviceEndpoint = "https://graph.microsoft.com/v1.0/me/drive/root/children";
-                var filesResponse = await client.GetAsync(serviceEndpoint + "?$select=name,id");
-
-                var filesContent = await filesResponse.Content.ReadAsStringAsync();
-
-                JObject parsedResult = JObject.Parse(filesContent);
-
-                foreach (JObject file in parsedResult["value"])
-                {
-
-                    var name = (string)file["name"];
-                    if (name.Contains("WoodGroveBankExpenseTrendsWorkbook.xlsx"))
-                    {
-                        fileId = (string)file["id"];
-                        restURLBase = "https://graph.microsoft.com/v1.0/me/drive/items/" + fileId + "/workbook/worksheets('Donations')/";
-
-                    }
-                }         
-
-                HttpResponseMessage response = await client.GetAsync(restURLBase + "tables('DonationsTable')/Rows");
-                if (response.IsSuccessStatusCode)
-                {
-                    string resultString = await response.Content.ReadAsStringAsync();
-
-                    dynamic x = Newtonsoft.Json.JsonConvert.DeserializeObject(resultString);
-                    JArray y = x.value;
-
-                    donations = BuildList(donations, y);
-                }
-            }
-
-            return donations;
-        }
-        */
 
 }

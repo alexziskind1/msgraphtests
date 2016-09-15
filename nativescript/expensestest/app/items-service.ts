@@ -55,7 +55,21 @@ export class ItemsService {
 
     }
 
-    public addTransaction(t: Transaction) {
-        this._transactions.push(t);
+    public addTransaction(t: Transaction) : Promise<Transaction> {
+         return new Promise((resolve, reject)=>{
+            console.log('getTransactions promise');
+            tnsOAuthModule.ensureValidToken()
+                .then((token)=>{
+                    excelHelper.ExcelHelper.addTransaction(token, t)
+                        .then((tx)=>{
+                            resolve(tx);
+                        });
+                });
+
+
+        });
+
+
+        //this._transactions.push(t);
     }
 }

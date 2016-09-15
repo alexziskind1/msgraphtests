@@ -48,7 +48,17 @@ var ItemsService = (function () {
         //return Promise.resolve(this._transactions);
     };
     ItemsService.prototype.addTransaction = function (t) {
-        this._transactions.push(t);
+        return new Promise(function (resolve, reject) {
+            console.log('getTransactions promise');
+            tnsOAuthModule.ensureValidToken()
+                .then(function (token) {
+                excelHelper.ExcelHelper.addTransaction(token, t)
+                    .then(function (tx) {
+                    resolve(tx);
+                });
+            });
+        });
+        //this._transactions.push(t);
     };
     ItemsService._instance = new ItemsService();
     return ItemsService;

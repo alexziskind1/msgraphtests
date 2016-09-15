@@ -4,6 +4,8 @@ var GRAPH_RESOURCE = "https://graph.microsoft.com/";
 var expensesFileName = "Expenses.xlsx";
 var driveRootChildrenEndpoint = "https://graph.microsoft.com/v1.0/me/drive/root/children";
 var filesSelectQuery = "?$select=name,id";
+var txFormulaMonth = "=TEXT([DATE], \"mmm - yyyy\")";
+var txFormulaTypeOfDay = "=IF(OR((TEXT([DATE], \"dddd\") = \"Saturday\"), (TEXT([DATE], \"dddd\") = \"Sunday\")), \"Weekend\", \"Weekday\")";
 //
 var ExcelHelper = (function () {
     function ExcelHelper() {
@@ -69,6 +71,35 @@ var ExcelHelper = (function () {
                 .catch(function (er) {
                 console.log(er);
                 reject(er);
+            });
+        });
+    };
+    ExcelHelper.addTransaction = function (accessToken, t) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getExpensesFileId(accessToken)
+                .then(function (fileId) {
+                var restURLBase = "https://graph.microsoft.com/v1.0/me/drive/items/" + fileId + "/workbook/tables('TransactionsTable')/Rows/";
+                var values = [[t.date, t.amount, t.merchant, t.category, txFormulaTypeOfDay, txFormulaMonth]];
+                var bodyStr = JSON.stringify({ index: null, values: values });
+                var req = {
+                    url: restURLBase,
+                    method: "POST",
+                    content: bodyStr,
+                    headers: {
+                        Authorization: "Bearer " + accessToken
+                    }
+                };
+                return new Promise(function (resolve, reject) {
+                    http.getJSON(req)
+                        .then(function (txResultResponse) {
+                        console.dir(txResultResponse);
+                    })
+                        .catch(function (er) {
+                        console.log(er);
+                        reject(er);
+                    });
+                });
             });
         });
     };

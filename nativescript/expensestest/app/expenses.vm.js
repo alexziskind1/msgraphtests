@@ -3,6 +3,7 @@ var observable = require("data/observable");
 var observableArray = require("data/observable-array");
 var frameModule = require('ui/frame');
 var items_service_1 = require('./items-service');
+var tnsOauthModule = require('nativescript-oauth');
 var ExpensesModel = (function (_super) {
     __extends(ExpensesModel, _super);
     function ExpensesModel() {
@@ -26,6 +27,9 @@ var ExpensesModel = (function (_super) {
             clearHistory: true
         };
         frameModule.topmost().navigate(navEntry);
+    };
+    ExpensesModel.prototype.logoutTap = function () {
+        tnsOauthModule.logout('main-page');
     };
     ExpensesModel.prototype.selectTransaction = function () {
         console.log('selectTransaction');
