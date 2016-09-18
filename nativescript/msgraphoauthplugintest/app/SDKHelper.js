@@ -7,8 +7,19 @@ var baseUrl = 'https://graph.microsoft.com/v1.0';
 var SDKHelper = (function () {
     function SDKHelper() {
     }
+    SDKHelper.Initialize = function (p_clientId, p_scope) {
+        var options = {
+            clientId: p_clientId,
+            scope: p_scope
+        };
+        this._initialized = true;
+        return tnsOAuthModule.initOffice365(options);
+    };
     // Get an authenticated Microsoft Graph Service client.
     SDKHelper.GetAuthenticatedClient = function () {
+        if (!this._initialized) {
+            throw new Error('The SDKHelper was not initialized');
+        }
         var graphClient = new GraphServiceClient_1.GraphServiceClient(new DelegateAuthenticationProvider_1.DelegateAuthenticationProvider(function (requestMessage) {
             return new Promise(function (resolve, reject) {
                 tnsOAuthModule.ensureValidToken()
@@ -29,6 +40,7 @@ var SDKHelper = (function () {
         tnsOAuthModule.logout(returnPage);
     };
     SDKHelper.graphClient = null;
+    SDKHelper._initialized = false;
     return SDKHelper;
 }());
 exports.SDKHelper = SDKHelper;
