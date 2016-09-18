@@ -3,8 +3,7 @@
 <Page.actionBar>
     <ActionBar title="Expenses"> 
       <ActionBar.actionItems>
-         <ActionItem tap="{{ logoutTap }}" ios.position="left" text="Logout" />
-         
+         <ActionItem tap="onActionTap" ios.systemIcon="9" ios.position="right" text="Action" />
          <ActionItem tap="{{ addItemTap }}" ios.position="right"  android.position="popup" ios.systemIcon="4" android.systemIcon="ic_menu_add" />
       </ActionBar.actionItems>
     </ActionBar>
@@ -14,21 +13,21 @@
 
     <GridLayout>
 
-      <ListView items="{{ transactions }}" row="1" separatorColor="#fac950" itemTap="{{selectTransaction}}" >
+      <ListView items="{{ transactions }}" row="1" separatorColor="#217346" itemTap="{{selectTransaction}}" >
         <ListView.itemTemplate>
-          <GridLayout columns="90, *, 50">
-             <StackLayout col="0">
-              <Label text="{{ date }}" textWrap="true"  />
-              <Label text="{{ category }}" textWrap="true"  />
+          <GridLayout columns="100, *, *">
+             <StackLayout col="0" class="expense-item-left-wrapper">
+              <Label text="{{ date }}" class="expense-item-date" textWrap="true"  />
+              <Label text="{{ category }}" class="expense-item-category" textWrap="true"  />
             </StackLayout>
 
-            <StackLayout col="1">
-              <Label text="{{ merchant }}" textWrap="true"  />
+            <StackLayout col="1" class="expense-item-middle-wrapper">
+              <Label text="{{ merchant }}" class="expense-item-merchant" textWrap="true"  />
               
             </StackLayout>
 
-            <StackLayout col="2">
-              <Label text="{{ amount }}" textWrap="true" horizontalAlignment="right"  />
+            <StackLayout col="2" class="expense-item-right-wrapper">
+              <Label text="{{ '$' +  amount }}" class="expense-item-amount" textWrap="true" horizontalAlignment="right"  />
             </StackLayout>
           </GridLayout>
           

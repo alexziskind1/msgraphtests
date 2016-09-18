@@ -4,8 +4,7 @@
 
     <Page.actionBar>
         <ActionBar>
-            <ActionItem tap="onActionTap"
-                ios.systemIcon="9" ios.position="right" text="Action" />
+            <ActionItem tap="onActionTap" ios.systemIcon="9" ios.position="right" text="Action" />
         </ActionBar>
     </Page.actionBar>
 

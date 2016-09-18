@@ -9,22 +9,24 @@
     </ActionBar>
   </Page.actionBar>
 
-  <StackLayout>
+
         <GridLayout columns="100 *" rows="auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto 50">
 
-        <Label col="0" row="0" text="Merchant" />
-        <TextField col="1" row="0" text="{{ merchant }}" hint="merchant" />
+          <Label class="expense-add-label" col="0" row="0" text="Merchant" />
+          <TextField class="expense-add-field" col="1" row="0" text="{{ merchant }}" hint="merchant" />
 
-        <Label col="0" row="1" text="Amount" />
-        <TextField col="1" row="1" text="{{ amount }}" hint="amount" />
+          <Label class="expense-add-label" col="0" row="1" text="Amount" />
+          <TextField class="expense-add-field" col="1" row="1" text="{{ amount }}" hint="amount" />
 
-        <Label col="0" row="5" text="Category" />
-        <ListPicker col="1" row="5" id="picker" class="picker" items="{{ categories }}" selectedIndex="{{ selectedCategoryIndex }}"
-                verticalAlignment="center" horizontalAlignment="center"/>
 
-        <Label col="0" row="6" text="Date" />
-        <DatePicker col="1" row="6" day="{{ selectedDateDay }}" month="{{ selectedDateMonth }}" year="{{ selectedDateYear }}" />
+
+          <Label class="expense-add-label" col="0" row="2" text="Date" />
+          <DatePicker class="expense-add-field" col="1" row="2" day="{{ selectedDateDay }}" month="{{ selectedDateMonth }}" year="{{ selectedDateYear }}" />
+
+          <Label class="expense-add-label" col="0" row="3" text="Category" />
+          <ListPicker class="expense-add-field" col="1" row="3" id="picker" class="picker" items="{{ categories }}" selectedIndex="{{ selectedCategoryIndex }}"
+                  verticalAlignment="center" horizontalAlignment="center"/>
 
         </GridLayout>
-  </StackLayout>
+
 </Page>
