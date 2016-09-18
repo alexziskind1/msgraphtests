@@ -1,0 +1,64 @@
+{
+  "name": "nativescript-msgraph",
+  "version": "0.0.3",
+  "description": "MSGraph for NativeScript.",
+  "files": [
+    "**/*.d.ts",
+    "**/*.js"
+  ],
+  "nativescript": {
+    "platforms": {
+      "ios": "2.2.1",
+      "android": "2.2.1"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "demo.ios": "npm run preparedemo && cd demo && tns emulate ios",
+    "demo.android": "npm run preparedemo && cd demo && tns run android",
+    "preparedemo": "npm run build && cd demo && tns plugin remove nativescript-msgraph && tns plugin add .. && tns install",
+    "setup": "cd demo && npm install && cd .. && npm run build && cd demo && tns plugin add .. && cd .."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexziskind1/nativescript-msgraph.git"
+  },
+  "typescript": {
+    "definition": "index.d.ts"
+  },
+  "typings": "index",
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "TypeScript",
+    "Office365",
+    "Azure AD",
+    "iOS",
+    "Android"
+  ],
+  "author": {
+    "name": "Alexander Ziskind",
+    "email": "alex@nuvious.com",
+    "url": "http://www.nuvious.com/blog"
+  },
+  "contributors": [
+  ],
+  "bugs": {
+    "url": "https://github.com/alexziskind1/nativescript-msgraph/issues"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/alexziskind1/nativescript-msgraph/blob/master/LICENSE"
+  },
+  "homepage": "https://github.com/alexziskind1/nativescript-msgraph",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "lodash": "^4.15.0",
+    "nativescript-oauth": "^1.0.2"
+  },
+  "devDependencies": {
+    "nativescript-dev-typescript": "^0.3.0",
+    "tns-core-modules": "^2.1.0",
+    "typescript": "^1.8.10"
+  }
+}
