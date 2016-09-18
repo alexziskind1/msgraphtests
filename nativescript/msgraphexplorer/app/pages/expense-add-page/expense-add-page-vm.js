@@ -1,12 +1,13 @@
 "use strict";
 var observable = require("data/observable");
-var frameModule = require('ui/frame');
+var navigationModule = require('../../shared/navigation');
 var ExpensesModels_1 = require('../../models/ExpensesModels');
 var expenses_service_1 = require('../../services/expenses-service');
 var AddItemModel = (function (_super) {
     __extends(AddItemModel, _super);
-    function AddItemModel() {
+    function AddItemModel(vm) {
         _super.call(this);
+        this.vm = vm;
         this.categories = ExpensesModels_1.Categories;
         //this.amount = 0;
         this._selectedCategoryIndex = 0;
@@ -39,10 +40,10 @@ var AddItemModel = (function (_super) {
                 merchant: this.merchant.toUpperCase(),
                 amount: this.amount,
                 category: this.categories[this.selectedCategoryIndex],
-                month: 'Sept - 2016',
-                typeofday: 'Weekday'
+                month: '',
+                typeofday: ''
             };
-            expenses_service_1.ExpensesService.addTransaction(newTransaction);
+            expenses_service_1.ExpensesService.addTransaction(newTransaction, this.vm.entityId);
         }
         this.gotoMain();
     };
@@ -50,13 +51,8 @@ var AddItemModel = (function (_super) {
         this.gotoMain();
     };
     AddItemModel.prototype.gotoMain = function () {
-        var navEntry = {
-            moduleName: 'expenses-page',
-            transition: { name: 'slideBottom' },
-            backstackVisible: false,
-            clearHistory: true
-        };
-        frameModule.topmost().navigate(navEntry);
+        //navigationModule.goToExpensesPage(this.vm);
+        navigationModule.goBack();
     };
     return AddItemModel;
 }(observable.Observable));

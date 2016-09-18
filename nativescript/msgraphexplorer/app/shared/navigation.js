@@ -71,10 +71,11 @@ function goToExpensesPage(vm, clearHistory) {
     frameModule.topmost().navigate(navEntry);
 }
 exports.goToExpensesPage = goToExpensesPage;
-function goToExpenseAddPage(clearHistory) {
+function goToExpenseAddPage(vm, clearHistory) {
     var ePage = expenseAddPage();
     var navEntry = {
         moduleName: ePage,
+        context: vm,
         clearHistory: clearHistory
     };
     frameModule.topmost().navigate(navEntry);

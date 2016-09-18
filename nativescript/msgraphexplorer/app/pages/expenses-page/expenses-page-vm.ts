@@ -1,6 +1,5 @@
 import observable = require("data/observable");
 import observableArray = require("data/observable-array");
-import frameModule = require('ui/frame');
 import * as navigationModule from '../../shared/navigation';
 import { ExplorerPageViewModel } from '../explorer-page/explorer-page-vm';
 
@@ -14,21 +13,21 @@ export class ExpensesModel extends observable.Observable {
     public transactions = new observableArray.ObservableArray<Transaction>([]);
     private _expensesFileId: string;
 
-    constructor(vm: ExplorerPageViewModel) {
+    constructor(public vm: ExplorerPageViewModel) {
         super();
         this._expensesFileId = vm.entityId;
     }
 
     public init() {
         console.log('init');
-        ExpensesService.getTransactions()
+        ExpensesService.getTransactions(this.vm.entityId)
             .then((tx)=>{
                 this.transactions.push(tx);
             });
     }
 
     public addItemTap() {
-        navigationModule.goToExpenseAddPage();
+        navigationModule.goToExpenseAddPage(this.vm);
     }
 
     public logoutTap() {

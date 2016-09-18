@@ -1,7 +1,7 @@
 import observable = require("data/observable");
 import observableArray = require("data/observable-array");
-import frameModule = require('ui/frame');
-
+import { ExplorerPageViewModel } from '../explorer-page/explorer-page-vm';
+import * as navigationModule from '../../shared/navigation';
 import { Transaction, Category, Categories } from '../../models/ExpensesModels';
 import { ExpensesService } from '../../services/expenses-service';
 
@@ -29,7 +29,7 @@ export class AddItemModel extends observable.Observable {
         this._selectedCategoryIndex = val;
     }
 
-    constructor() {
+    constructor(public vm: ExplorerPageViewModel) {
         super();
         this.categories = Categories;
         //this.amount = 0;
@@ -47,11 +47,10 @@ export class AddItemModel extends observable.Observable {
                 merchant: this.merchant.toUpperCase(),
                 amount: this.amount,
                 category: <Category>this.categories[this.selectedCategoryIndex],
-                month: 'Sept - 2016',
-                typeofday: 'Weekday'
+                month: '',
+                typeofday: ''
             };
-            ExpensesService.addTransaction(newTransaction);
-
+            ExpensesService.addTransaction(newTransaction, this.vm.entityId);
         }
         this.gotoMain();
     }
@@ -61,13 +60,8 @@ export class AddItemModel extends observable.Observable {
     }
 
     private gotoMain() {
-        var navEntry: frameModule.NavigationEntry = {
-            moduleName: 'expenses-page',
-            transition:  { name: 'slideBottom' },
-            backstackVisible: false,
-            clearHistory: true
-        };
-        frameModule.topmost().navigate(navEntry);
+        //navigationModule.goToExpensesPage(this.vm);
+        navigationModule.goBack();
     }
 
 }

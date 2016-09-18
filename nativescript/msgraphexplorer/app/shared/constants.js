@@ -13,6 +13,9 @@ exports.SCOPES = ["User.Read",
 exports.FILES_READWRITE_SCOPES = ["Files.ReadWrite"];
 exports.ACTIVE_SCOPES = ['Files.ReadWrite', 'User.ReadWrite', 'offline_access'];
 exports.EXPENSES_FILE_NAME = 'Expenses.xlsx';
+exports.TRANSACTIONS_TABLE_NAME = "TransactionsTable";
+exports.TX_FORMULA_MONTH = "=TEXT([DATE], \"mmm - yyyy\")";
+exports.TX_FORMULA_TYPEOFDAY = "=IF(OR((TEXT([DATE], \"dddd\") = \"Saturday\"), (TEXT([DATE], \"dddd\") = \"Sunday\")), \"Weekend\", \"Weekday\")";
 exports.IMAGE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'];
 exports.FILE_FORMATS = [
     { ext: 'jpg', type: 'image', icon: '' },

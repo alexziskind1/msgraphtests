@@ -1,11 +1,15 @@
 "use strict";
 var expense_add_page_vm_1 = require("./expense-add-page-vm");
-// Event handler for Page "navigatingTo" event attached in main-page.xml
-function navigatingTo(args) {
-    // Get the event sender
-    var page = args.object;
-    page.bindingContext = new expense_add_page_vm_1.AddItemModel();
+var vm;
+var page;
+function pageLoaded(args) {
+    page = args.object;
+    var navModel = null;
+    if (page.navigationContext) {
+        navModel = page.navigationContext;
+        vm = new expense_add_page_vm_1.AddItemModel(navModel);
+    }
+    page.bindingContext = vm;
 }
-exports.navigatingTo = navigatingTo;
-var a = 1;
+exports.pageLoaded = pageLoaded;
 //# sourceMappingURL=expense-add-page.js.map

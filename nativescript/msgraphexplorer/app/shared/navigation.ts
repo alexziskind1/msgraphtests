@@ -77,10 +77,11 @@ export function	goToExpensesPage(vm: ExplorerPageViewModel, clearHistory?: boole
     frameModule.topmost().navigate(navEntry);
 }
 
-export function	goToExpenseAddPage(clearHistory?: boolean) {
+export function	goToExpenseAddPage(vm: ExplorerPageViewModel, clearHistory?: boolean) {
     var ePage = expenseAddPage();
     var navEntry: frameModule.NavigationEntry = {
         moduleName: ePage,
+        context: vm,
         clearHistory: clearHistory
     };
     

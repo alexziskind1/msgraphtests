@@ -15,6 +15,11 @@ export const FILES_READWRITE_SCOPES = ["Files.ReadWrite"];
 export const ACTIVE_SCOPES = ['Files.ReadWrite', 'User.ReadWrite', 'offline_access'];
 
 export const EXPENSES_FILE_NAME = 'Expenses.xlsx';
+export const TRANSACTIONS_TABLE_NAME:  string = "TransactionsTable";
+
+export const TX_FORMULA_MONTH = "=TEXT([DATE], \"mmm - yyyy\")";
+export const TX_FORMULA_TYPEOFDAY = "=IF(OR((TEXT([DATE], \"dddd\") = \"Saturday\"), (TEXT([DATE], \"dddd\") = \"Sunday\")), \"Weekend\", \"Weekday\")";
+
 
 export const IMAGE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'];
 
