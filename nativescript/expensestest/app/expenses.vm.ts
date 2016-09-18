@@ -6,6 +6,7 @@ import { Transaction } from './models';
 import { ItemsService } from './items-service';
 import * as tnsOauthModule from 'nativescript-oauth';
 
+
 export class ExpensesModel extends observable.Observable {
 
     public transactions = new observableArray.ObservableArray<Transaction>([]);
@@ -23,7 +24,6 @@ export class ExpensesModel extends observable.Observable {
     }
 
     public addItemTap() {
-        
         console.log('add item');
 
         var navEntry: frameModule.NavigationEntry = {

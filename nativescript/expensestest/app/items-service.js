@@ -1,5 +1,6 @@
 "use strict";
 var excelHelper = require('./graph-excel-helper');
+var graphSdkExcelHelper = require('./graph-sdk-helper');
 var tnsOAuthModule = require('nativescript-oauth');
 var ItemsService = (function () {
     function ItemsService() {
@@ -38,7 +39,7 @@ var ItemsService = (function () {
             console.log('getTransactions promise');
             tnsOAuthModule.ensureValidToken()
                 .then(function (token) {
-                excelHelper.ExcelHelper.getTransactions(token)
+                graphSdkExcelHelper.GraphSdkExcelHelper.getTransactions(token)
                     .then(function (t) {
                     resolve(t);
                     //console.log('fileId: ' + fileId);

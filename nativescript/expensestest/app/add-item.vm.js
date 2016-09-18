@@ -8,7 +8,7 @@ var AddItemModel = (function (_super) {
     function AddItemModel() {
         _super.call(this);
         this.categories = models_1.Categories;
-        this.amount = 0;
+        //this.amount = 0;
         this._selectedCategoryIndex = 0;
         var now = new Date();
         this.selectedDateDay = now.getDate();
@@ -33,11 +33,11 @@ var AddItemModel = (function (_super) {
         configurable: true
     });
     AddItemModel.prototype.saveTap = function () {
-        if (this.amount > 0) {
+        if (this.merchant && this.amount && this.amount > 0) {
             var newTransaction = {
                 date: this.selectedDateStr,
-                merchant: this.get('merchant'),
-                amount: this.get('amount'),
+                merchant: this.merchant.toUpperCase(),
+                amount: this.amount,
                 category: this.categories[this.selectedCategoryIndex],
                 month: 'Sept - 2016',
                 typeofday: 'Weekday'

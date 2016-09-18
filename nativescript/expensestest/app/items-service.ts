@@ -1,5 +1,6 @@
 import { Transaction } from './models';
 import * as excelHelper from './graph-excel-helper';
+import * as graphSdkExcelHelper from './graph-sdk-helper';
 import * as tnsOAuthModule from 'nativescript-oauth';
 
 export class ItemsService {
@@ -41,7 +42,8 @@ export class ItemsService {
             console.log('getTransactions promise');
             tnsOAuthModule.ensureValidToken()
                 .then((token)=>{
-                    excelHelper.ExcelHelper.getTransactions(token)
+                    graphSdkExcelHelper.GraphSdkExcelHelper.getTransactions(token)
+                    //excelHelper.ExcelHelper.getTransactions(token)
                         .then((t)=>{
                             resolve(t);
                             //console.log('fileId: ' + fileId);

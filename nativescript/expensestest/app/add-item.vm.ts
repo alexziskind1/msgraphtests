@@ -32,7 +32,7 @@ export class AddItemModel extends observable.Observable {
     constructor() {
         super();
         this.categories = Categories;
-        this.amount = 0;
+        //this.amount = 0;
         this._selectedCategoryIndex = 0;
         var now = new Date();
         this.selectedDateDay = now.getDate();
@@ -41,11 +41,11 @@ export class AddItemModel extends observable.Observable {
     }
 
     public saveTap() {
-        if (this.amount > 0) {
+        if (this.merchant && this.amount && this.amount > 0) {
             var newTransaction: Transaction = {
                 date: this.selectedDateStr,
-                merchant: this.get('merchant'),
-                amount: this.get('amount'),
+                merchant: this.merchant.toUpperCase(),
+                amount: this.amount,
                 category: <Category>this.categories[this.selectedCategoryIndex],
                 month: 'Sept - 2016',
                 typeofday: 'Weekday'
