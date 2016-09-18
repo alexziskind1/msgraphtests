@@ -1,0 +1,22 @@
+{
+  "description": "NativeScript Application",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "readme": "NativeScript Application",
+  "repository": "<fill-your-repository-here>",
+  "nativescript": {
+    "id": "org.nativescript.msgraphexplorer",
+    "tns-ios": {
+      "version": "2.2.1"
+    }
+  },
+  "dependencies": {
+    "tns-core-modules": "2.2.0",
+    "nativescript-pulltorefresh": "^1.1.4",
+    "nativescript-msgraph": "file:../plugins/nativescript-msgraph",
+    "filesize": "^3.3.0"
+  },
+  "devDependencies": {
+    "nativescript-dev-typescript": "^0.3.2",
+    "typescript": "^1.8.10"
+  }
+}

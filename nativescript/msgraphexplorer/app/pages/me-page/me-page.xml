@@ -1,0 +1,9 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded">
+  <StackLayout>
+    <Label text="text" class="login-title"/>
+
+    <Button text="Load me" tap="{{ onLoadMeTap }}"/>
+
+    <Label text="{{ name }}" class=""/>
+  </StackLayout>
+</Page>

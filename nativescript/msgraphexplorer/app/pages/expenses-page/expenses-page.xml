@@ -1,0 +1,39 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded">
+
+<Page.actionBar>
+    <ActionBar title="Expenses"> 
+      <ActionBar.actionItems>
+         <ActionItem tap="{{ logoutTap }}" ios.position="left" text="Logout" />
+         <ActionItem tap="{{ addItemTap }}" ios.position="right"  android.position="popup" ios.systemIcon="4" android.systemIcon="ic_menu_add" />
+      </ActionBar.actionItems>
+    </ActionBar>
+  </Page.actionBar>
+
+  <StackLayout>
+
+    <GridLayout>
+
+      <ListView items="{{ transactions }}" row="1" separatorColor="#fac950" itemTap="{{selectTransaction}}" >
+        <ListView.itemTemplate>
+          <GridLayout columns="90, *, 50">
+             <StackLayout col="0">
+              <Label text="{{ date }}" textWrap="true"  />
+              <Label text="{{ category }}" textWrap="true"  />
+            </StackLayout>
+
+            <StackLayout col="1">
+              <Label text="{{ merchant }}" textWrap="true"  />
+              
+            </StackLayout>
+
+            <StackLayout col="2">
+              <Label text="{{ amount }}" textWrap="true" horizontalAlignment="right"  />
+            </StackLayout>
+          </GridLayout>
+          
+        </ListView.itemTemplate>
+      </ListView>
+
+    </GridLayout>
+  </StackLayout>
+</Page>
