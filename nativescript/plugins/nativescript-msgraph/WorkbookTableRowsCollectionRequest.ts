@@ -31,7 +31,7 @@ export class WorkbookTableRowsCollectionRequest extends BaseRequest implements I
                 this.ContentType = "application/json";
                 this.Method = "POST";
 
-                this.SendGen<WorkbookTableRow>(WorkbookTableRow, cancellationToken)
+                this.SendGen<WorkbookTableRow>(workbookTableRow, cancellationToken)
                     .then((result: WorkbookTableRow)=>{
                         //this.InitializeCollectionProperties(retrievedEntity);
                         resolve(result);
